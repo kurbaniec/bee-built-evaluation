@@ -1,21 +1,20 @@
 package com.beeproduced.example.application.media.service
 
 import com.beeproduced.bee.buzz.manager.EventManager
-import com.beeproduced.bee.functional.extensions.com.github.michaelbull.result.getDataFetcher
 import com.beeproduced.bee.functional.result.AppResult
-import com.beeproduced.bee.functional.result.errors.BadRequestError
 import com.beeproduced.bee.persistent.extensions.graphql.schema.toDataSelection
 import com.beeproduced.example.application.graphql.dto.AddFilm
 import com.beeproduced.example.application.graphql.dto.EditFilm
-import com.beeproduced.example.application.graphql.dto.Foo
 import com.beeproduced.example.application.organisation.service.setContext
 import com.beeproduced.service.media.events.CreateFilm
 import com.beeproduced.service.media.events.GetRecentlyAddedFilms
 import com.beeproduced.service.media.events.UpdateFilm
 import com.beeproduced.utils.logFor
 import com.github.michaelbull.result.*
-import com.netflix.graphql.dgs.*
-import graphql.execution.DataFetcherResult
+import com.netflix.graphql.dgs.DgsComponent
+import com.netflix.graphql.dgs.DgsMutation
+import com.netflix.graphql.dgs.DgsQuery
+import com.netflix.graphql.dgs.InputArgument
 import graphql.relay.Connection
 import graphql.schema.DataFetchingEnvironment
 

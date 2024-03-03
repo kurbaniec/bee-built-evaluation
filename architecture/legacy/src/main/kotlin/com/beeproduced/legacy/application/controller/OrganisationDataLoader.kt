@@ -36,7 +36,7 @@ fun DataFetchingEnvironment.setContext(context: DataFetchingEnvironment) {
 }
 
 fun BatchLoaderEnvironment.context(): DataFetchingEnvironment {
-    return getContext<GraphQLContext>().get(ContextName)
+    return getContext<GraphQLContext>()[ContextName]
 }
 
 

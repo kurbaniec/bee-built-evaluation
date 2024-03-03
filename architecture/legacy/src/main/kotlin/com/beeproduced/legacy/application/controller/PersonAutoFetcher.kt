@@ -6,7 +6,6 @@ import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsData
 import graphql.schema.DataFetchingEnvironment
 import java.util.concurrent.CompletableFuture
-import kotlin.String
 import kotlin.collections.List
 import org.dataloader.DataLoader
 
