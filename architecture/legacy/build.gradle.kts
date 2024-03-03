@@ -15,7 +15,6 @@ plugins {
     alias(libs.plugins.kotlin.allopen)
     alias(libs.plugins.kotlin.noarg)
     java
-    id("bee.generative")
     id("org.sonarqube") version "4.4.1.3373"
 }
 
@@ -56,25 +55,25 @@ repositories {
 }
 
 dependencies {
-    // service modules & more
-    implementation(project(":service.media"))
-    implementation(project(":service.media.events"))
-    implementation(project(":service.organisation"))
-    implementation(project(":service.organisation.events"))
-    implementation(project(":utils"))
     // in-house libraries
     implementation("com.beeproduced:bee.buzz")
     implementation("com.beeproduced:bee.buzz") {
         capabilities { requireCapability("com.beeproduced:bee.buzz-simple") }
     }
+    implementation("com.beeproduced:bee.functional")
     implementation("com.beeproduced:bee.functional") {
         capabilities { requireCapability("com.beeproduced:bee.functional-dgs") }
+    }
+    implementation("com.beeproduced:bee.functional") {
+        capabilities { requireCapability("com.beeproduced:bee.functional-persistent") }
     }
     implementation("com.beeproduced:bee.persistent")
     implementation("com.beeproduced:bee.persistent") {
         capabilities { requireCapability("com.beeproduced:bee.persistent-dgs") }
     }
-    beeGenerative("com.beeproduced:bee.fetched")
+    implementation("com.beeproduced:bee.persistent") {
+        capabilities { requireCapability("com.beeproduced:bee.persistent-jpa") }
+    }
     // external dependencies
     implementation(libs.kotlin.stdlib)
     implementation(libs.spring.boot.starter.web)
@@ -127,18 +126,13 @@ tasks.withType<Test> {
 // See: https://stackoverflow.com/a/70954759/12347616
 tasks.withType<GenerateJavaTask> {
     notCompatibleWithConfigurationCache("Remove later")
-    packageName = "com.beeproduced.example.application.graphql"
+    packageName = "com.beeproduced.legacy.application.graphql"
     subPackageNameTypes = "dto"
     generateCustomAnnotations = true
     typeMapping = mutableMapOf(
         "DateTime" to "java.time.Instant",
         "Upload" to "org.springframework.web.multipart.MultipartFile"
     )
-}
-
-beeGenerative {
-    arg("fetchedScanPackage", "com.beeproduced.example.application.graphql.dto")
-    arg("fetchedPackageName", "com.beeproduced.example.application.graphql.fetcher")
 }
 
 kapt {
