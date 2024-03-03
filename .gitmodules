@@ -1,0 +1,3 @@
+[submodule "bee-built"]
+	path = bee-built
+	url = https://github.com/bee-produced/bee-built
