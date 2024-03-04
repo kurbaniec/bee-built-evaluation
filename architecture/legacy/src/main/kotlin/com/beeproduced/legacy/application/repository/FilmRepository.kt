@@ -2,12 +2,16 @@ package com.beeproduced.legacy.application.repository
 
 import com.beeproduced.bee.persistent.jpa.repository.extensions.PaginationResult
 import com.beeproduced.bee.persistent.selection.DataSelection
-import com.beeproduced.legacy.application.dao.FilmDao
+import com.beeproduced.legacy.application.dao.*
 import com.beeproduced.legacy.application.model.FilmId
 import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
+import jakarta.persistence.criteria.CriteriaBuilder
+import jakarta.persistence.criteria.CriteriaQuery
+import jakarta.persistence.criteria.Root
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
+import java.time.Instant
 import java.util.UUID
 
 /**
@@ -25,34 +29,77 @@ interface FilmRepositoryCustom {
     fun selectById(id: UUID, selection: DataSelection): FilmDao?
     fun selectByIdIn(ids: Collection<UUID>, selection: DataSelection): List<FilmDao>
     fun recentlyAdded(
-        first: Int?, after: String?, last: Int?, before: String?,
+        first: Int?, after: Int?, last: Int?, before: Int?,
         selection: DataSelection
-    ): PaginationResult<FilmDao, String>
+    ): List<FilmDao>
 }
 
+@Repository
 class FilmRepositoryCustomImpl : FilmRepositoryCustom {
     @PersistenceContext
     lateinit var em: EntityManager
     override fun select(selection: DataSelection): List<FilmDao> {
-        TODO("Not yet implemented")
+        val query = buildQuery(selection)
+        return em.createQuery(query).resultList
     }
 
     override fun selectById(id: UUID, selection: DataSelection): FilmDao? {
-        TODO("Not yet implemented")
+        return selectByIdIn(listOf(id), selection).firstOrNull()
     }
 
     override fun selectByIdIn(ids: Collection<UUID>, selection: DataSelection): List<FilmDao> {
-        TODO("Not yet implemented")
+        if (ids.isEmpty()) return emptyList()
+        val query = buildQuery(selection) { query, root, cb ->
+            if (ids.isNotEmpty()) {
+                val filmIdPath = root.get<FilmId>("id")
+                val inClause = cb.`in`(filmIdPath)
+                ids.forEach { inClause.value(it) }
+                query.where(inClause)
+            }
+        }
+        return em.createQuery(query).resultList
     }
 
     override fun recentlyAdded(
         first: Int?,
-        after: String?,
+        after: Int?,
         last: Int?,
-        before: String?,
+        before: Int?,
         selection: DataSelection,
-    ): PaginationResult<FilmDao, String> {
-        TODO("Not yet implemented")
+    ): List<FilmDao> {
+        if (first == null && last == null)
+            throw IllegalArgumentException("[first] or [last] must be given!")
+        val size = first ?: last ?: 0
+        val offset = if (first != null && after != null) size * after
+        else if (last != null && before != null) size * before
+        else 0
+
+        val query = buildQuery(selection) { query, root, cb ->
+            if (first != null)
+                query.orderBy(cb.asc(root.get<Instant>("addedOn")))
+            else
+                query.orderBy(cb.desc(root.get<Instant>("addedOn")))
+        }
+
+        val pageQuery = em.createQuery(query)
+        pageQuery.maxResults = size
+        pageQuery.firstResult = offset
+
+        return pageQuery.resultList
+    }
+
+    private fun buildQuery(
+        selection: DataSelection,
+        where: (query: CriteriaQuery<FilmDao>, root: Root<FilmDao>, cb: CriteriaBuilder)->Unit = { _, _, _ -> }
+    ): CriteriaQuery<FilmDao> {
+        val cb: CriteriaBuilder = em.criteriaBuilder
+        val query: CriteriaQuery<FilmDao> = cb.createQuery(FilmDao::class.java)
+        val companyRoot: Root<FilmDao> = query.from(FilmDao::class.java)
+
+        where(query, companyRoot, cb)
+
+        query.select(companyRoot)
+        return query
     }
 }
 

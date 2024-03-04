@@ -1,8 +1,7 @@
 package com.beeproduced.legacy.application.event
 
-import com.beeproduced.bee.persistent.jpa.repository.extensions.PaginationResult
-import com.beeproduced.bee.persistent.selection.DataSelection
 import com.beeproduced.bee.buzz.Request
+import com.beeproduced.bee.persistent.selection.DataSelection
 import com.beeproduced.legacy.application.model.Film
 import com.beeproduced.legacy.application.model.input.CreateFilmInput
 import com.beeproduced.legacy.application.model.input.FilmPagination
@@ -32,4 +31,4 @@ data class GetAllFilms(
 data class GetRecentlyAddedFilms(
     val pagination: FilmPagination,
     val selection: DataSelection
-): Request<PaginationResult<Film, String>>
+): Request<Collection<Film>>

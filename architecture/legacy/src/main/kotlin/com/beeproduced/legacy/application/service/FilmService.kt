@@ -103,15 +103,12 @@ class FilmService(
     fun getRecentlyAdded(
         pagination: FilmPagination,
         selection: DataSelection
-    ): AppResult<PaginationResult<Film, String>> {
-        TODO("implement page navigation")
-        // return Ok(repository.recentlyAdded(
-        //     pagination.first,
-        //     pagination.after,
-        //     pagination.last,
-        //     pagination.before,
-        //     selection
-        // ))
+    ): AppResult<List<Film>> {
+        val (first, after, last, before) = pagination
+        val filmDaos = repository.recentlyAdded(first, after, last, before, selection)
+        val films = filmDaos.map(mapper::toModel)
+        // TODO: DataLoader call...
+        return Ok(films)
     }
 
     @TransactionalResult(

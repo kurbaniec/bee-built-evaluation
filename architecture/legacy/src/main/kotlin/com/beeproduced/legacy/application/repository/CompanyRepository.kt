@@ -52,8 +52,8 @@ class CompanyRepositoryCustomImpl : CompanyRepositoryCustom {
         if (ids.isEmpty()) return emptyList()
         val query = buildQuery(selection) { query, root, cb ->
             if (ids.isNotEmpty()) {
-                val personIdPath = root.get<CompanyId>("id")
-                val inClause = cb.`in`(personIdPath)
+                val companyIdPath = root.get<CompanyId>("id")
+                val inClause = cb.`in`(companyIdPath)
                 ids.forEach { inClause.value(it) }
                 query.where(inClause)
             }

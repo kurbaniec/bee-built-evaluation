@@ -35,11 +35,11 @@ class MediaController(
     @DgsQuery
     fun recentlyAddedFilms(
         @InputArgument("last") last: Int?,
-        @InputArgument("before") before: String?,
+        @InputArgument("before") before: Int?,
         @InputArgument("first") first: Int?,
-        @InputArgument("after") after: String?,
+        @InputArgument("after") after: Int?,
         dfe: DataFetchingEnvironment
-    ): AppResult<Connection<FilmDto>> {
+    ): AppResult<List<FilmDto>> {
         return Ok(mapper.toPagination(first, after, last, before))
             .onSuccess { dfe.setContext(dfe) }
             .map { input -> GetRecentlyAddedFilms(input, dfe.selectionSet.toDataSelection()) }

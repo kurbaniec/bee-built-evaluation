@@ -1,6 +1,5 @@
 package com.beeproduced.legacy.application.controller.mapper
 
-import com.beeproduced.bee.persistent.jpa.repository.extensions.PaginationResult
 import com.beeproduced.legacy.application.dto.AddFilmDto
 import com.beeproduced.legacy.application.dto.EditFilmDto
 import com.beeproduced.legacy.application.dto.FilmDto
@@ -8,11 +7,6 @@ import com.beeproduced.legacy.application.model.Film
 import com.beeproduced.legacy.application.model.input.CreateFilmInput
 import com.beeproduced.legacy.application.model.input.FilmPagination
 import com.beeproduced.legacy.application.model.input.UpdateFilmInput
-import graphql.relay.Connection
-import graphql.relay.DefaultConnection
-import graphql.relay.DefaultConnectionCursor
-import graphql.relay.DefaultEdge
-import graphql.relay.DefaultPageInfo
 import org.mapstruct.Mapper
 import org.mapstruct.Mapping
 
@@ -30,28 +24,15 @@ abstract class MediaMapper {
     @Mapping(target = "cast", ignore = true)
     abstract fun toDto(entity: Film): FilmDto
 
-    fun toDto(entity: PaginationResult<Film, String>): Connection<FilmDto> {
-        val pageInfo = DefaultPageInfo(
-            /* startCursor = */ entity.pageInfo?.startCursor?.let { DefaultConnectionCursor(it) },
-            /* endCursor = */ entity.pageInfo?.endCursor?.let { DefaultConnectionCursor(it) },
-            /* hasPreviousPage = */ entity.pageInfo?.hasPreviousPage ?: false,
-            /* hasNextPage = */ entity.pageInfo?.hasNextPage ?: false
-        )
-
-        val edges = entity.edges.map { edge ->
-            val dto = toDto(edge.node)
-            val cursor = DefaultConnectionCursor(edge.cursor)
-            DefaultEdge(dto, cursor)
-        }
-
-        return DefaultConnection(edges, pageInfo)
+    fun toDto(entities: Collection<Film>): List<FilmDto> {
+        return entities.map(::toDto)
     }
 
     fun toPagination(
         first: Int?,
-        after: String?,
+        after: Int?,
         last: Int?,
-        before: String?
+        before: Int?
     ): FilmPagination {
         return FilmPagination(
             first = first,

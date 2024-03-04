@@ -1,11 +1,10 @@
 package com.beeproduced.legacy.application.event
 
-import com.beeproduced.bee.persistent.jpa.repository.extensions.PaginationResult
 import com.beeproduced.bee.buzz.manager.EventManager
 import com.beeproduced.bee.buzz.requestHandler
 import com.beeproduced.bee.functional.result.AppResult
-import com.beeproduced.legacy.application.service.FilmService
 import com.beeproduced.legacy.application.model.Film
+import com.beeproduced.legacy.application.service.FilmService
 import jakarta.annotation.PostConstruct
 import org.springframework.context.annotation.Configuration
 
@@ -34,6 +33,6 @@ class FilmEvents(
         = service.update(request.update, request.selection)
     private fun getAll(request: GetAllFilms): AppResult<Collection<Film>>
         = service.getAll(request.selection)
-    private fun getRecentlyAdded(request: GetRecentlyAddedFilms): AppResult<PaginationResult<Film, String>>
+    private fun getRecentlyAdded(request: GetRecentlyAddedFilms): AppResult<Collection<Film>>
         = service.getRecentlyAdded(request.pagination, request.selection)
 }

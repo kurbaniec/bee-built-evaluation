@@ -8,7 +8,7 @@ package com.beeproduced.legacy.application.model.input
  */
 data class FilmPagination(
     val first: Int?,
-    val after: String?,
+    val after: Int?,
     val last: Int?,
-    val before: String?
+    val before: Int?
 )
