@@ -7,6 +7,7 @@ import com.beeproduced.bee.functional.result.AppResult
 import com.beeproduced.bee.functional.result.errors.BadRequestError
 import com.beeproduced.bee.functional.extensions.com.github.michaelbull.result.andThenOnSuccess
 import com.beeproduced.bee.functional.persistent.transactional.TransactionalResult
+import com.beeproduced.bee.persistent.selection.EmptySelection
 import com.beeproduced.legacy.application.event.CompaniesExist
 import com.beeproduced.legacy.application.event.PersonsExist
 import com.beeproduced.legacy.application.repository.FilmRepository
@@ -17,6 +18,7 @@ import com.beeproduced.legacy.application.model.input.FilmPagination
 import com.beeproduced.legacy.application.model.input.UpdateFilmInput
 import com.beeproduced.legacy.application.model.CompanyId
 import com.beeproduced.legacy.application.model.PersonId
+import com.beeproduced.legacy.application.service.mapper.FilmMapper
 import com.beeproduced.legacy.application.utils.logFor
 import com.github.michaelbull.result.*
 import org.springframework.stereotype.Service
@@ -34,11 +36,11 @@ import java.util.*
 class FilmService(
     private val eventManager: EventManager,
     private val repository: FilmRepository,
+    private val mapper: FilmMapper
 ) {
     private val logger = logFor<FilmRepository>()
 
     @TransactionalResult(
-        "mediaTransactionManager",
         exceptionDescription = "Could not create film",
     )
     fun create(
@@ -49,19 +51,9 @@ class FilmService(
         return organisationIdsExist(
             create.studios, create.directors + create.cast
         ).map {
-            repository.persist(
-                Film(
-                UUID.randomUUID(),
-                create.title,
-                create.year,
-                create.synopsis,
-                create.runtime,
-                create.studios.toSet(),
-                create.directors.toSet(),
-                create.cast.toSet(),
-                Instant.now().truncatedTo(ChronoUnit.MICROS)
-            )
-            )
+            val filmDao = mapper.toDao(create)
+            repository.save(filmDao)
+            mapper.toModel(filmDao)
         }
     }
 
@@ -78,7 +70,6 @@ class FilmService(
     }
 
     @TransactionalResult(
-        "mediaTransactionManager",
         exceptionDescription = "Could not update film",
     )
     fun update(
@@ -86,7 +77,7 @@ class FilmService(
         selection: DataSelection
     ): AppResult<Film> {
         logger.debug("update({}, {})", update, selection)
-        return repository.selectById(update.id)
+        return repository.selectById(update.id, selection)
             .toResultOr { BadRequestError("No film with id ${update.id} found") }
             .andThenOnSuccess {
                 val personIds = mutableListOf<PersonId>()
@@ -94,20 +85,18 @@ class FilmService(
                     .also { update.cast?.let(it::addAll) }
                 organisationIdsExist(update.studios, personIds)
             }.map { film ->
-                repository.update(film.copy(
-                    title = update.title ?: film.title,
-                    year = update.year ?: film.year,
-                    synopsis = update.synopsis ?: film.synopsis,
-                    runtime = update.runtime ?: film.runtime,
-                    studioIds = update.studios?.toSet() ?: film.studioIds,
-                    directorIds = update.directors?.toSet() ?: film.directorIds,
-                    castIds = update.cast?.toSet() ?: film.castIds,
-                ))
+                if (update.title != null) film.title = update.title
+                if (update.year != null) film.year = update.year
+                if (update.synopsis != null) film.synopsis = update.synopsis
+                if (update.runtime != null) film.runtime = update.runtime
+                if (update.studios != null) film.studioIds = update.studios.toMutableSet()
+                if (update.directors != null) film.directorIds = update.directors.toMutableSet()
+                if (update.cast != null) film.castIds = update.cast.toMutableSet()
+                mapper.toModel(film)
             }
     }
 
     @TransactionalResult(
-        "mediaTransactionManager",
         exceptionDescription = "Could not fetch all films",
         readOnly = true
     )
@@ -115,35 +104,39 @@ class FilmService(
         pagination: FilmPagination,
         selection: DataSelection
     ): AppResult<PaginationResult<Film, String>> {
-        return Ok(repository.recentlyAdded(
-            pagination.first,
-            pagination.after,
-            pagination.last,
-            pagination.before,
-            selection
-        ))
+        TODO("implement page navigation")
+        // return Ok(repository.recentlyAdded(
+        //     pagination.first,
+        //     pagination.after,
+        //     pagination.last,
+        //     pagination.before,
+        //     selection
+        // ))
     }
 
     @TransactionalResult(
-        "mediaTransactionManager",
         exceptionDescription = "Could not fetch all films",
         readOnly = true
     )
     fun getAll(selection: DataSelection): AppResult<List<Film>> {
         logger.debug("getAll({})", selection)
-        return Ok(repository.select(selection))
+        val filmDaos = repository.select(selection)
+        val films = filmDaos.map(mapper::toModel)
+        return Ok(films)
     }
 
     @TransactionalResult(
-        "organisationTransactionManager",
         exceptionDescription = "Could not fetch all films",
         readOnly = true
     )
     fun getByIds(ids: Collection<FilmId>, selection: DataSelection): AppResult<List<Film>> {
         logger.debug("getByIds({}, {})", ids, selection)
         val uniqueIds = ids.toSet()
-        val films = repository.selectByIds(uniqueIds)
-        if (films.count() == uniqueIds.count()) return Ok(films)
+        val filmDaos = repository.selectByIdIn(uniqueIds, selection)
+        if (filmDaos.count() == uniqueIds.count()) {
+            val films = filmDaos.map(mapper::toModel)
+            return Ok(films)
+        }
         return Err(BadRequestError("Could not find all persons"))
     }
 }

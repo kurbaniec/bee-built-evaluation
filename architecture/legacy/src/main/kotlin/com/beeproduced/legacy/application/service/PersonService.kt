@@ -10,12 +10,12 @@ import com.beeproduced.legacy.application.model.Person
 import com.beeproduced.legacy.application.model.PersonId
 import com.beeproduced.legacy.application.model.input.CreateAddressInput
 import com.beeproduced.legacy.application.model.input.CreatePersonInput
+import com.beeproduced.legacy.application.service.mapper.PersonMapper
 import com.beeproduced.legacy.application.utils.logFor
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.map
 import org.springframework.stereotype.Service
-import java.util.*
 
 /**
  *
@@ -26,12 +26,12 @@ import java.util.*
 @Service
 class PersonService(
     private val repository: PersonRepository,
-    private val addressService: AddressService
+    private val addressService: AddressService,
+    private val mapper: PersonMapper
 ) {
     private val logger = logFor<PersonRepository>()
 
     @TransactionalResult(
-        "organisationTransactionManager",
         exceptionDescription = "Could not create person",
     )
     fun create(
@@ -40,15 +40,9 @@ class PersonService(
     ): AppResult<Person> {
         logger.debug("create({}, {})", create, selection)
         return createAddress(create.address).map { address ->
-            val person = Person(
-                id = UUID.randomUUID(),
-                firstname = create.firstname,
-                lastname = create.lastname,
-                memberOf = null,
-                addressId = address?.id,
-                address = address
-            )
-            repository.persist(person)
+            val personDao = mapper.toDao(create, address)
+            repository.save(personDao)
+            mapper.toModel(personDao)
         }
     }
 
@@ -58,35 +52,37 @@ class PersonService(
     }
 
     @TransactionalResult(
-        "organisationTransactionManager",
         exceptionDescription = "Could not fetch all persons",
         readOnly = true
     )
     fun getAll(selection: DataSelection): AppResult<List<Person>> {
         logger.debug("getAll({})", selection)
-        return Ok(repository.select(selection))
+        val personDaos = repository.select(selection)
+        val persons = personDaos.map(mapper::toModel)
+        return Ok(persons)
     }
 
     @TransactionalResult(
-        "organisationTransactionManager",
         exceptionDescription = "Could not fetch all persons",
         readOnly = true
     )
     fun getByIds(ids: Collection<PersonId>, selection: DataSelection): AppResult<List<Person>> {
         logger.debug("getByIds({}, {})", ids, selection)
         val uniqueIds = ids.toSet()
-        val persons = repository.selectByIds(uniqueIds, selection)
-        if (persons.count() == uniqueIds.count()) return Ok(persons)
+        val personDaos = repository.selectByIdIn(uniqueIds, selection)
+        if (personDaos.count() == uniqueIds.count()) {
+            val persons = personDaos.map(mapper::toModel)
+            return Ok(persons)
+        }
         return Err(BadRequestError("Could not find all persons"))
     }
 
     @TransactionalResult(
-        "organisationTransactionManager",
         exceptionDescription = "Could not check persons",
         readOnly = true
     )
     fun exists(ids: Collection<PersonId>): AppResult<Unit> {
-        return if (repository.existsAll(ids)) Ok(Unit)
+        return if (repository.existsAllByIdIn(ids)) Ok(Unit)
         else Err(BadRequestError("Could not find some persons"))
     }
 }

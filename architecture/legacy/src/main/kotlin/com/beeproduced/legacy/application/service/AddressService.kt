@@ -5,6 +5,7 @@ import com.beeproduced.bee.functional.persistent.transactional.TransactionalResu
 import com.beeproduced.legacy.application.repository.AddressRepository
 import com.beeproduced.legacy.application.model.Address
 import com.beeproduced.legacy.application.model.input.CreateAddressInput
+import com.beeproduced.legacy.application.service.mapper.AddressMapper
 import com.beeproduced.legacy.application.utils.logFor
 import com.github.michaelbull.result.Ok
 import org.springframework.stereotype.Service
@@ -18,23 +19,19 @@ import java.util.*
  */
 @Service
 class AddressService(
-    private val repository: AddressRepository
+    private val repository: AddressRepository,
+    private val mapper: AddressMapper
 ) {
     private val logger = logFor<AddressRepository>()
 
     @TransactionalResult(
-        "organisationTransactionManager",
         exceptionDescription = "Could not create address",
     )
     fun create(create: CreateAddressInput): AppResult<Address> {
         logger.debug("create({})", create)
-        val address = Address(
-            id = UUID.randomUUID(),
-            addressLine1 = create.addressLine1,
-            addressLine2 = create.addressLine2,
-            zipCode = create.zipCode,
-            city = create.city
-        )
-        return Ok(repository.persist(address))
+        val addressDao = mapper.toDao(create)
+        repository.save(addressDao)
+        val address = mapper.toModel(addressDao)
+        return Ok(address)
     }
 }

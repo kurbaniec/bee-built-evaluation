@@ -1,7 +1,7 @@
 package com.beeproduced.legacy.application.model
 
-import com.beeproduced.bee.persistent.jpa.entity.DataEntity
-import jakarta.persistence.*
+import jakarta.persistence.Column
+import jakarta.persistence.Embeddable
 import java.io.Serializable
 
 /**
@@ -19,22 +19,9 @@ data class CompanyMemberId(
     val personId: PersonId
 ) : Serializable
 
-@Entity
-@IdClass(CompanyMemberId::class)
-@Table(name = "company_members")
 data class CompanyMember(
-    @Id
-    @Column(name = "company_id")
     val companyId: CompanyId,
-    @Id
-    @Column(name = "person_id")
     val personId: PersonId,
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "company_id", referencedColumnName = "id", insertable = false, updatable = false)
     val company: Company? = null,
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "person_id", referencedColumnName = "id", insertable = false, updatable = false)
     val person: Person? = null,
-) : DataEntity<CompanyMember> {
-    override fun clone(): CompanyMember = this.copy()
-}
+)
