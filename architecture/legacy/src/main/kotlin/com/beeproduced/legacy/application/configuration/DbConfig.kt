@@ -1,10 +1,9 @@
-package com.beeproduced.legacy.application.configuration.db
+package com.beeproduced.legacy.application.configuration
 
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.jdbc.DataSourceBuilder
 import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
 import org.springframework.core.env.Environment
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 import org.springframework.orm.jpa.AbstractEntityManagerFactoryBean
@@ -20,22 +19,22 @@ import javax.sql.DataSource
  * @author Kacper Urbaniec
  * @version 2023-09-27
  */
-@Configuration("MediaDbConfig")
+
 @EnableJpaRepositories(
     basePackages = ["com.beeproduced.legacy.application"],
-    entityManagerFactoryRef = "mediaEntityManager",
-    transactionManagerRef = "mediaTransactionManager"
+    entityManagerFactoryRef = "appEntityManager",
+    transactionManagerRef = "appTransactionManager"
 )
 class DbConfig(val env: Environment) {
 
-    @Bean(name = ["mediaDataSource"])
-    @ConfigurationProperties(prefix = "spring.datasource-media")
+    @Bean(name = ["appDataSource"])
+    @ConfigurationProperties(prefix = "spring.datasource-app")
     fun usermanagementDataSource(): DataSource {
         return DataSourceBuilder.create().build()
     }
 
-    @Bean(name = ["mediaEntityManager"])
-    fun userEntityManager(@Qualifier("mediaDataSource") dataSource: DataSource): LocalContainerEntityManagerFactoryBean {
+    @Bean(name = ["appEntityManager"])
+    fun userEntityManager(@Qualifier("appDataSource") dataSource: DataSource): LocalContainerEntityManagerFactoryBean {
         val em = LocalContainerEntityManagerFactoryBean()
         em.setDataSource(dataSource)
         em.setPackagesToScan("com.beeproduced.legacy.application")
@@ -48,8 +47,8 @@ class DbConfig(val env: Environment) {
         return em
     }
 
-    @Bean(name = ["mediaTransactionManager"])
-    fun userTransactionManager(@Qualifier("mediaEntityManager") userEntityManager: AbstractEntityManagerFactoryBean): PlatformTransactionManager {
+    @Bean(name = ["appTransactionManager"])
+    fun userTransactionManager(@Qualifier("appEntityManager") userEntityManager: AbstractEntityManagerFactoryBean): PlatformTransactionManager {
         val transactionManager = JpaTransactionManager()
         transactionManager.entityManagerFactory = userEntityManager.getObject()
         return transactionManager
