@@ -12,7 +12,7 @@ import java.util.*
 
 typealias FilmId = UUID
 
-class Film(
+data class Film(
     val id: FilmId,
     val title: String,
     val year: Int,
@@ -21,5 +21,9 @@ class Film(
     val studioIds: Set<CompanyId>,
     val directorIds: Set<PersonId>,
     val castIds: Set<PersonId>,
-    val addedOn: Instant
+    val addedOn: Instant,
+    // DataFetcher properties
+    val studios: Set<Company>? = null,
+    val directors: Set<Person>? = null,
+    val cast: Set<Person>? = null
 )

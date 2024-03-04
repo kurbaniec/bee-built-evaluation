@@ -16,12 +16,9 @@ import org.mapstruct.Mapping
  * @author Kacper Urbaniec
  * @version 2023-10-02
  */
-@Mapper
+@Mapper(uses = [OrganisationMapper::class])
 abstract class MediaMapper {
 
-    @Mapping(target = "studios", ignore = true)
-    @Mapping(target = "directors", ignore = true)
-    @Mapping(target = "cast", ignore = true)
     abstract fun toDto(entity: Film): FilmDto
 
     fun toDto(entities: Collection<Film>): List<FilmDto> {

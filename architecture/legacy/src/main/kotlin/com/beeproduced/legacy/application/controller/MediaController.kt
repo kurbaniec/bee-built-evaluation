@@ -16,7 +16,6 @@ import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsMutation
 import com.netflix.graphql.dgs.DgsQuery
 import com.netflix.graphql.dgs.InputArgument
-import graphql.relay.Connection
 import graphql.schema.DataFetchingEnvironment
 
 /**
@@ -41,7 +40,6 @@ class MediaController(
         dfe: DataFetchingEnvironment
     ): AppResult<List<FilmDto>> {
         return Ok(mapper.toPagination(first, after, last, before))
-            .onSuccess { dfe.setContext(dfe) }
             .map { input -> GetRecentlyAddedFilms(input, dfe.selectionSet.toDataSelection()) }
             .andThen(eventManager::send)
             .map(mapper::toDto)
@@ -54,7 +52,6 @@ class MediaController(
         dfe: DataFetchingEnvironment
     ): AppResult<FilmDto> {
         return Ok(mapper.toEntity(input))
-            .onSuccess { dfe.setContext(dfe) }
             .map { create -> CreateFilm(create, dfe.selectionSet.toDataSelection()) }
             .andThen(eventManager::send)
             .map(mapper::toDto)
@@ -67,7 +64,6 @@ class MediaController(
         dfe: DataFetchingEnvironment
     ): AppResult<FilmDto> {
         return Ok(mapper.toEntity(input))
-            .onSuccess { dfe.setContext(dfe) }
             .map { edit -> UpdateFilm(edit, dfe.selectionSet.toDataSelection()) }
             .andThen(eventManager::send)
             .map(mapper::toDto)
