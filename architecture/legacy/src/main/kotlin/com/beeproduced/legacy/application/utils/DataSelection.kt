@@ -2,9 +2,9 @@ package com.beeproduced.legacy.application.utils
 
 import com.beeproduced.bee.persistent.selection.DataSelection
 import com.beeproduced.bee.persistent.selection.SkipOverAll
-import com.beeproduced.service.organisation.entities.Company
-import com.beeproduced.service.organisation.entities.CompanyMember
-import com.beeproduced.service.organisation.entities.Person
+import com.beeproduced.legacy.application.model.Company
+import com.beeproduced.legacy.application.model.CompanyMember
+import com.beeproduced.legacy.application.model.Person
 
 /**
  *

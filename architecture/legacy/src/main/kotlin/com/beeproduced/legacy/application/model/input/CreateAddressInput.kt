@@ -1,4 +1,4 @@
-package com.beeproduced.service.organisation.entities.input
+package com.beeproduced.legacy.application.model.input
 
 /**
  *

@@ -1,10 +1,10 @@
 package com.beeproduced.legacy.application.repository
 
 import com.beeproduced.bee.persistent.jpa.repository.BaseDataRepository
-import com.beeproduced.service.organisation.entities.Company
-import com.beeproduced.service.organisation.entities.CompanyId
-import com.beeproduced.service.organisation.entities.CompanyMember
-import com.beeproduced.service.organisation.entities.CompanyMemberId
+import com.beeproduced.legacy.application.model.Company
+import com.beeproduced.legacy.application.model.CompanyId
+import com.beeproduced.legacy.application.model.CompanyMember
+import com.beeproduced.legacy.application.model.CompanyMemberId
 import jakarta.persistence.EntityManager
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component

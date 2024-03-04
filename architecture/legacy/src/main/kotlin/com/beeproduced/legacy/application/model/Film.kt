@@ -1,9 +1,7 @@
-package com.beeproduced.service.media.entities
+package com.beeproduced.legacy.application.model
 
 import com.beeproduced.bee.persistent.jpa.entity.DataEntity
-import com.beeproduced.service.organisation.entities.CompanyId
-import com.beeproduced.service.organisation.entities.PersonId
-import com.beeproduced.utils.UUIDSetConverter
+import com.beeproduced.legacy.application.utils.UUIDSetConverter
 import jakarta.persistence.*
 import java.time.Instant
 import java.util.UUID

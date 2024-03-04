@@ -6,12 +6,12 @@ import com.beeproduced.bee.functional.result.AppResult
 import com.beeproduced.bee.functional.result.errors.BadRequestError
 import com.beeproduced.bee.functional.extensions.com.github.michaelbull.result.andThenToPair
 import com.beeproduced.bee.functional.persistent.transactional.TransactionalResult
+import com.beeproduced.legacy.application.model.*
 import com.beeproduced.legacy.application.repository.CompanyMemberRepository
 import com.beeproduced.legacy.application.repository.CompanyRepository
-import com.beeproduced.service.organisation.entities.*
-import com.beeproduced.service.organisation.entities.input.CreateAddressInput
-import com.beeproduced.service.organisation.entities.input.CreateCompanyInput
-import com.beeproduced.utils.logFor
+import com.beeproduced.legacy.application.model.input.CreateAddressInput
+import com.beeproduced.legacy.application.model.input.CreateCompanyInput
+import com.beeproduced.legacy.application.utils.logFor
 import com.github.michaelbull.result.Err
 import com.github.michaelbull.result.Ok
 import com.github.michaelbull.result.map

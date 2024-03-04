@@ -5,7 +5,7 @@ import com.beeproduced.bee.buzz.requestHandler
 import com.beeproduced.bee.functional.result.AppResult
 import com.beeproduced.legacy.application.service.PersonService
 import com.beeproduced.legacy.application.utils.organisationAdapter
-import com.beeproduced.service.organisation.entities.Person
+import com.beeproduced.legacy.application.model.Person
 import jakarta.annotation.PostConstruct
 import org.springframework.context.annotation.Configuration
 

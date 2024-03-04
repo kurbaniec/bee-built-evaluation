@@ -10,14 +10,14 @@ import com.beeproduced.bee.functional.persistent.transactional.TransactionalResu
 import com.beeproduced.legacy.application.event.CompaniesExist
 import com.beeproduced.legacy.application.event.PersonsExist
 import com.beeproduced.legacy.application.repository.FilmRepository
-import com.beeproduced.service.media.entities.Film
-import com.beeproduced.service.media.entities.FilmId
-import com.beeproduced.service.media.entities.input.CreateFilmInput
-import com.beeproduced.service.media.entities.input.FilmPagination
-import com.beeproduced.service.media.entities.input.UpdateFilmInput
-import com.beeproduced.service.organisation.entities.CompanyId
-import com.beeproduced.service.organisation.entities.PersonId
-import com.beeproduced.utils.logFor
+import com.beeproduced.legacy.application.model.Film
+import com.beeproduced.legacy.application.model.FilmId
+import com.beeproduced.legacy.application.model.input.CreateFilmInput
+import com.beeproduced.legacy.application.model.input.FilmPagination
+import com.beeproduced.legacy.application.model.input.UpdateFilmInput
+import com.beeproduced.legacy.application.model.CompanyId
+import com.beeproduced.legacy.application.model.PersonId
+import com.beeproduced.legacy.application.utils.logFor
 import com.github.michaelbull.result.*
 import org.springframework.stereotype.Service
 import java.time.Instant
@@ -49,7 +49,8 @@ class FilmService(
         return organisationIdsExist(
             create.studios, create.directors + create.cast
         ).map {
-            repository.persist(Film(
+            repository.persist(
+                Film(
                 UUID.randomUUID(),
                 create.title,
                 create.year,
@@ -59,7 +60,8 @@ class FilmService(
                 create.directors.toSet(),
                 create.cast.toSet(),
                 Instant.now().truncatedTo(ChronoUnit.MICROS)
-            ))
+            )
+            )
         }
     }
 

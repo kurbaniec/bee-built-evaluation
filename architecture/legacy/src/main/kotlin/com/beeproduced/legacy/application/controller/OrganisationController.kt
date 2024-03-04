@@ -8,7 +8,7 @@ import com.beeproduced.legacy.application.dto.CompanyDto
 import com.beeproduced.legacy.application.dto.PersonDto
 import com.beeproduced.legacy.application.event.GetAllCompanies
 import com.beeproduced.legacy.application.event.GetAllPersons
-import com.beeproduced.utils.logFor
+import com.beeproduced.legacy.application.utils.logFor
 import com.github.michaelbull.result.map
 import com.github.michaelbull.result.onFailure
 import com.netflix.graphql.dgs.DgsComponent

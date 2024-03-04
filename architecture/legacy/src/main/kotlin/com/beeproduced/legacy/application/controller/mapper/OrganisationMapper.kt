@@ -3,11 +3,11 @@ package com.beeproduced.legacy.application.controller.mapper
 import com.beeproduced.legacy.application.dto.AddressDto
 import com.beeproduced.legacy.application.dto.CompanyDto
 import com.beeproduced.legacy.application.dto.PersonDto
-import com.beeproduced.service.organisation.entities.Address
-import com.beeproduced.service.organisation.entities.Company
-import com.beeproduced.service.organisation.entities.CompanyMember
-import com.beeproduced.service.organisation.entities.Person
-import com.beeproduced.utils.CycleAvoidingMappingContext
+import com.beeproduced.legacy.application.model.Address
+import com.beeproduced.legacy.application.model.Company
+import com.beeproduced.legacy.application.model.CompanyMember
+import com.beeproduced.legacy.application.model.Person
+import com.beeproduced.legacy.application.utils.CycleAvoidingMappingContext
 import org.mapstruct.Builder
 import org.mapstruct.Context
 import org.mapstruct.Mapper

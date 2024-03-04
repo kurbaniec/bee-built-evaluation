@@ -3,9 +3,9 @@ package com.beeproduced.legacy.application.service
 import com.beeproduced.bee.functional.result.AppResult
 import com.beeproduced.bee.functional.persistent.transactional.TransactionalResult
 import com.beeproduced.legacy.application.repository.AddressRepository
-import com.beeproduced.service.organisation.entities.Address
-import com.beeproduced.service.organisation.entities.input.CreateAddressInput
-import com.beeproduced.utils.logFor
+import com.beeproduced.legacy.application.model.Address
+import com.beeproduced.legacy.application.model.input.CreateAddressInput
+import com.beeproduced.legacy.application.utils.logFor
 import com.github.michaelbull.result.Ok
 import org.springframework.stereotype.Service
 import java.util.*

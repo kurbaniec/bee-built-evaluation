@@ -1,4 +1,4 @@
-package com.beeproduced.utils
+package com.beeproduced.legacy.application.utils
 
 import java.util.*
 

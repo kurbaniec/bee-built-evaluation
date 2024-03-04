@@ -5,7 +5,7 @@ import com.beeproduced.bee.buzz.manager.EventManager
 import com.beeproduced.bee.buzz.requestHandler
 import com.beeproduced.bee.functional.result.AppResult
 import com.beeproduced.legacy.application.service.FilmService
-import com.beeproduced.service.media.entities.Film
+import com.beeproduced.legacy.application.model.Film
 import jakarta.annotation.PostConstruct
 import org.springframework.context.annotation.Configuration
 

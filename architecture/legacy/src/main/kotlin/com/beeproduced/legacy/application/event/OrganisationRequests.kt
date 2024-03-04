@@ -2,12 +2,12 @@ package com.beeproduced.legacy.application.event
 
 import com.beeproduced.bee.persistent.selection.DataSelection
 import com.beeproduced.bee.buzz.Request
-import com.beeproduced.service.organisation.entities.Company
-import com.beeproduced.service.organisation.entities.CompanyId
-import com.beeproduced.service.organisation.entities.Person
-import com.beeproduced.service.organisation.entities.PersonId
-import com.beeproduced.service.organisation.entities.input.CreateCompanyInput
-import com.beeproduced.service.organisation.entities.input.CreatePersonInput
+import com.beeproduced.legacy.application.model.Company
+import com.beeproduced.legacy.application.model.CompanyId
+import com.beeproduced.legacy.application.model.Person
+import com.beeproduced.legacy.application.model.PersonId
+import com.beeproduced.legacy.application.model.input.CreateCompanyInput
+import com.beeproduced.legacy.application.model.input.CreatePersonInput
 
 /**
  *

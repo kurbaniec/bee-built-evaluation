@@ -4,10 +4,10 @@ import com.beeproduced.bee.persistent.jpa.repository.extensions.PaginationResult
 import com.beeproduced.legacy.application.dto.AddFilmDto
 import com.beeproduced.legacy.application.dto.EditFilmDto
 import com.beeproduced.legacy.application.dto.FilmDto
-import com.beeproduced.service.media.entities.Film
-import com.beeproduced.service.media.entities.input.CreateFilmInput
-import com.beeproduced.service.media.entities.input.FilmPagination
-import com.beeproduced.service.media.entities.input.UpdateFilmInput
+import com.beeproduced.legacy.application.model.Film
+import com.beeproduced.legacy.application.model.input.CreateFilmInput
+import com.beeproduced.legacy.application.model.input.FilmPagination
+import com.beeproduced.legacy.application.model.input.UpdateFilmInput
 import graphql.relay.Connection
 import graphql.relay.DefaultConnection
 import graphql.relay.DefaultConnectionCursor

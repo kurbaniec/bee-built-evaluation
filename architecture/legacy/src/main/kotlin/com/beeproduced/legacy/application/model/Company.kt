@@ -1,4 +1,4 @@
-package com.beeproduced.service.organisation.entities
+package com.beeproduced.legacy.application.model
 
 import com.beeproduced.bee.persistent.jpa.entity.DataEntity
 import jakarta.persistence.*

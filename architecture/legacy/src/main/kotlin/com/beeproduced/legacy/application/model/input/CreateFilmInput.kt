@@ -1,7 +1,7 @@
-package com.beeproduced.service.media.entities.input
+package com.beeproduced.legacy.application.model.input
 
-import com.beeproduced.service.organisation.entities.CompanyId
-import com.beeproduced.service.organisation.entities.PersonId
+import com.beeproduced.legacy.application.model.CompanyId
+import com.beeproduced.legacy.application.model.PersonId
 
 /**
  *

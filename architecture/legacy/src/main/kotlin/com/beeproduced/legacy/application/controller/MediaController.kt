@@ -10,7 +10,7 @@ import com.beeproduced.legacy.application.event.GetRecentlyAddedFilms
 import com.beeproduced.legacy.application.event.UpdateFilm
 import com.beeproduced.legacy.application.graphql.dto.AddFilm
 import com.beeproduced.legacy.application.graphql.dto.EditFilm
-import com.beeproduced.utils.logFor
+import com.beeproduced.legacy.application.utils.logFor
 import com.github.michaelbull.result.*
 import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsMutation

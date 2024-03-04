@@ -6,8 +6,8 @@ import com.beeproduced.bee.persistent.jpa.repository.extensions.Pagination
 import com.beeproduced.bee.persistent.jpa.repository.extensions.PaginationException
 import com.beeproduced.bee.persistent.jpa.repository.extensions.PaginationResult
 import com.beeproduced.bee.persistent.selection.DataSelection
-import com.beeproduced.service.media.entities.Film
-import com.beeproduced.service.media.entities.FilmId
+import com.beeproduced.legacy.application.model.Film
+import com.beeproduced.legacy.application.model.FilmId
 import com.linecorp.kotlinjdsl.query.spec.expression.ColumnSpec
 import com.linecorp.kotlinjdsl.query.spec.expression.EntitySpec
 import jakarta.persistence.EntityManager
