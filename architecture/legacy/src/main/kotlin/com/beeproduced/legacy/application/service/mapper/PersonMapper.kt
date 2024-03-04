@@ -6,12 +6,11 @@ import com.beeproduced.legacy.application.model.input.CreateAddressInput
 import com.beeproduced.legacy.application.model.input.CreateCompanyInput
 import com.beeproduced.legacy.application.model.input.CreateFilmInput
 import com.beeproduced.legacy.application.model.input.CreatePersonInput
+import com.beeproduced.legacy.application.utils.CycleAvoidingMappingContext
 import org.hibernate.Hibernate
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 import java.time.Instant
-import java.util.*
-import kotlin.collections.HashSet
 
 /**
  *
@@ -36,9 +35,12 @@ class PersonMapper(
         )
     }
 
-    fun toModel(dao: PersonDao): Person {
+    fun toModel(
+        dao: PersonDao,
+        context: CycleAvoidingMappingContext = CycleAvoidingMappingContext()
+    ): Person {
         val memberOf = if (Hibernate.isInitialized(dao.memberOf) && dao.memberOf != null) {
-            dao.memberOf?.mapTo(HashSet(), companyMemberMapper::toModel)
+            companyMemberMapper.toModel(requireNotNull(dao.memberOf), context)
         } else null
         val address = if (Hibernate.isInitialized(dao.address) && dao.address != null)
             addressMapper.toModel(requireNotNull(dao.address))
@@ -104,9 +106,12 @@ class CompanyMapper(
         )
     }
 
-    fun toModel(dao: CompanyDao): Company {
+    fun toModel(
+        dao: CompanyDao,
+        context: CycleAvoidingMappingContext = CycleAvoidingMappingContext()
+    ): Company {
         val employees = if (Hibernate.isInitialized(dao.employees) && dao.employees != null) {
-            dao.employees?.mapTo(HashSet(), companyMemberMapper::toModel)
+            companyMemberMapper.toModel(requireNotNull(dao.employees), context)
         } else null
         val address = if (Hibernate.isInitialized(dao.address) && dao.address != null)
             addressMapper.toModel(requireNotNull(dao.address))
@@ -126,13 +131,31 @@ class CompanyMemberMapper(
     @Lazy private val personMapper: PersonMapper,
     @Lazy private val companyMapper: CompanyMapper
 ) {
-    fun toModel(dao: CompanyMemberDao): CompanyMember {
+
+    fun toModel(
+        daos: Collection<CompanyMemberDao>,
+        context: CycleAvoidingMappingContext
+    ): Set<CompanyMember> {
+        if (daos.isEmpty()) return emptySet()
+        if (daos.any {
+            context.hasVisited(CompanyMember::class.java, Pair(it.companyId, it.personId))
+        }) return emptySet()
+        for (dao in daos)
+            context.addVisited(CompanyMember::class.java, Pair(dao.companyId, dao.personId))
+        return daos.mapTo(HashSet()) { toModel(it, context) }
+    }
+
+    fun toModel(
+        dao: CompanyMemberDao,
+        context: CycleAvoidingMappingContext
+    ): CompanyMember {
         val person = if (Hibernate.isInitialized(dao.person) && dao.person != null)
-            personMapper.toModel(requireNotNull(dao.person))
+            personMapper.toModel(requireNotNull(dao.person), context)
         else null
         val company = if (Hibernate.isInitialized(dao.company) && dao.company != null)
-            companyMapper.toModel(requireNotNull(dao.company))
+            companyMapper.toModel(requireNotNull(dao.company), context)
         else null
+
         return CompanyMember(
             companyId = dao.companyId,
             personId = dao.personId,
