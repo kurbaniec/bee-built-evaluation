@@ -2,6 +2,7 @@ package com.beeproduced.legacy.application.controller
 
 import com.beeproduced.bee.persistent.extensions.graphql.schema.toDataSelection
 import com.beeproduced.bee.buzz.manager.EventManager
+import com.beeproduced.bee.functional.extensions.com.github.michaelbull.result.getDataFetcher
 import com.beeproduced.bee.functional.result.AppResult
 import com.beeproduced.legacy.application.controller.mapper.OrganisationMapper
 import com.beeproduced.legacy.application.dto.CompanyDto
@@ -13,6 +14,7 @@ import com.github.michaelbull.result.map
 import com.github.michaelbull.result.onFailure
 import com.netflix.graphql.dgs.DgsComponent
 import com.netflix.graphql.dgs.DgsQuery
+import graphql.execution.DataFetcherResult
 import graphql.schema.DataFetchingEnvironment
 
 /**
@@ -30,22 +32,24 @@ class OrganisationController(
     private val logger = logFor<OrganisationController>()
 
     @DgsQuery
-    fun persons(dfe: DataFetchingEnvironment): AppResult<Collection<PersonDto>> {
+    fun persons(dfe: DataFetchingEnvironment): DataFetcherResult<Collection<PersonDto>> {
         logger.debug("persons()")
         return eventManager.send(
             GetAllPersons(dfe.selectionSet.toDataSelection())
         )
             .map(mapper::toPersonDtos)
             .onFailure { e -> logger.error(e.stackTraceToString()) }
+            .getDataFetcher()
     }
 
     @DgsQuery
-    fun companies(dfe: DataFetchingEnvironment): AppResult<Collection<CompanyDto>> {
+    fun companies(dfe: DataFetchingEnvironment): DataFetcherResult<Collection<CompanyDto>> {
         logger.debug("companies()")
         return eventManager.send(
             GetAllCompanies(dfe.selectionSet.toDataSelection())
         )
             .map(mapper::toCompanyDtos)
             .onFailure { e -> logger.error(e.stackTraceToString()) }
+            .getDataFetcher()
     }
 }
