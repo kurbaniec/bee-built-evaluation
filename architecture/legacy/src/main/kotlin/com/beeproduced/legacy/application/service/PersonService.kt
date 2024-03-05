@@ -1,16 +1,15 @@
 package com.beeproduced.legacy.application.service
 
-import com.beeproduced.bee.persistent.selection.DataSelection
+import com.beeproduced.bee.functional.persistent.transactional.TransactionalResult
 import com.beeproduced.bee.functional.result.AppResult
 import com.beeproduced.bee.functional.result.errors.BadRequestError
-import com.beeproduced.bee.functional.persistent.transactional.TransactionalResult
-import com.beeproduced.bee.persistent.selection.SimpleSelection
-import com.beeproduced.legacy.application.repository.PersonRepository
+import com.beeproduced.bee.persistent.selection.DataSelection
 import com.beeproduced.legacy.application.model.Address
 import com.beeproduced.legacy.application.model.Person
 import com.beeproduced.legacy.application.model.PersonId
 import com.beeproduced.legacy.application.model.input.CreateAddressInput
 import com.beeproduced.legacy.application.model.input.CreatePersonInput
+import com.beeproduced.legacy.application.repository.PersonRepository
 import com.beeproduced.legacy.application.service.mapper.PersonMapper
 import com.beeproduced.legacy.application.utils.logFor
 import com.github.michaelbull.result.Err

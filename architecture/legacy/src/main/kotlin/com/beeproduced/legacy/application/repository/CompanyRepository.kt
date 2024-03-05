@@ -9,10 +9,7 @@ import com.beeproduced.legacy.application.model.CompanyId
 import com.beeproduced.legacy.application.model.CompanyMemberId
 import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
-import jakarta.persistence.criteria.CriteriaBuilder
-import jakarta.persistence.criteria.CriteriaQuery
-import jakarta.persistence.criteria.JoinType
-import jakarta.persistence.criteria.Root
+import jakarta.persistence.criteria.*
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 import java.util.*

@@ -1,8 +1,7 @@
 package com.beeproduced.legacy.application.repository
 
-import com.beeproduced.bee.persistent.jpa.repository.extensions.PaginationResult
 import com.beeproduced.bee.persistent.selection.DataSelection
-import com.beeproduced.legacy.application.dao.*
+import com.beeproduced.legacy.application.dao.FilmDao
 import com.beeproduced.legacy.application.model.FilmId
 import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
@@ -12,7 +11,7 @@ import jakarta.persistence.criteria.Root
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 import java.time.Instant
-import java.util.UUID
+import java.util.*
 
 /**
  *
@@ -67,8 +66,9 @@ class FilmRepositoryCustomImpl : FilmRepositoryCustom {
         before: Int?,
         selection: DataSelection,
     ): List<FilmDao> {
-        if (first == null && last == null)
-            throw IllegalArgumentException("[first] or [last] must be given!")
+        require(first != null || last != null) {
+            "[first] or [last] must be given!"
+        }
         val size = first ?: last ?: 0
         val offset = if (first != null && after != null) size * after
         else if (last != null && before != null) size * before
@@ -88,6 +88,7 @@ class FilmRepositoryCustomImpl : FilmRepositoryCustom {
         return pageQuery.resultList
     }
 
+    @Suppress("UNUSED_PARAMETER")
     private fun buildQuery(
         selection: DataSelection,
         where: (query: CriteriaQuery<FilmDao>, root: Root<FilmDao>, cb: CriteriaBuilder)->Unit = { _, _, _ -> }
@@ -102,45 +103,3 @@ class FilmRepositoryCustomImpl : FilmRepositoryCustom {
         return query
     }
 }
-
-// @Component
-// class FilmRepository(
-//     @Qualifier("mediaEntityManager") em: EntityManager
-// ) : BaseDataRepository<Film, FilmId>(em) {
-//
-//     companion object {
-//         private fun decodeCursor(c: String): Instant {
-//             val tmp = String(Base64.getDecoder().decode(c))
-//             val data = tmp.split("X")
-//             val seconds = data.first().toLong()
-//             val nano = data.last().toLong()
-//             return Instant.ofEpochSecond(seconds, nano)
-//         }
-//
-//         private fun encodeCursor(v: Film): String {
-//             val c = v.addedOn
-//             val tmp = "${c.epochSecond}X${c.nano}"
-//             return Base64.getEncoder().encodeToString(tmp.toByteArray())
-//         }
-//     }
-//
-//     private val recentlyAddedPagination = Pagination<Film, Instant, String, Any?>(
-//         repository = this,
-//         orderBy = ColumnSpec(EntitySpec(Film::class.java), Film::addedOn.name),
-//         cursor = Cursor(
-//             decode = ::decodeCursor,
-//             encode = ::encodeCursor
-//         ),
-//     )
-//
-//     fun recentlyAdded(
-//         first: Int?, after: String?, last: Int?, before: String?,
-//         selection: DataSelection
-//     ): PaginationResult<Film, String> {
-//         return if (first != null) recentlyAddedPagination.forward(first, after, null, selection)
-//         else if (last != null) recentlyAddedPagination.backward(last, before, null, selection)
-//         else throw PaginationException("Invalid parameters")
-//     }
-//
-//
-// }
