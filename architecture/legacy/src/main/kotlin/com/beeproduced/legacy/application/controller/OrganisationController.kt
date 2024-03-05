@@ -1,9 +1,8 @@
 package com.beeproduced.legacy.application.controller
 
-import com.beeproduced.bee.persistent.extensions.graphql.schema.toDataSelection
 import com.beeproduced.bee.buzz.manager.EventManager
 import com.beeproduced.bee.functional.extensions.com.github.michaelbull.result.getDataFetcher
-import com.beeproduced.bee.functional.result.AppResult
+import com.beeproduced.bee.persistent.extensions.graphql.schema.toDataSelection
 import com.beeproduced.legacy.application.controller.mapper.OrganisationMapper
 import com.beeproduced.legacy.application.dto.CompanyDto
 import com.beeproduced.legacy.application.dto.PersonDto
