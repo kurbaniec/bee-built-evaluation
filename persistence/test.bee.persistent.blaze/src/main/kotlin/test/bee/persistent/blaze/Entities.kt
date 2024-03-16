@@ -30,7 +30,7 @@ class Movie(
 interface MovieRepository : BeeBlazeRepository<Movie, Long>
 
 @Entity
-class CinemaHall(
+data class CinemaHall(
     @Id @GeneratedValue
     override val id: Long = 0,
     override val hallName: String,
@@ -45,7 +45,7 @@ class CinemaHall(
 interface CinemaHallRepository : BeeBlazeRepository<CinemaHall, Long>
 
 @Entity
-class Ticket(
+data class Ticket(
     @Id @GeneratedValue
     override val id: Long = 0,
     override val price: Double,
@@ -76,7 +76,7 @@ data class PopcornStand(
 interface PopcornStandRepository : BeeBlazeRepository<PopcornStand, Long>
 
 @Entity
-class CinemaBuff(
+data class CinemaBuff(
     @Id @GeneratedValue
     override val id: Long = 0,
     override val name: String,
