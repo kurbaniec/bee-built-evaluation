@@ -30,7 +30,7 @@ repositories {
 }
 
 dependencies {
-
+    implementation(kotlin("test"))
 }
 
 tasks.withType<Test> {

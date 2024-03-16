@@ -23,7 +23,7 @@ class Movie(
     val cinemaHallId: Long,
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cinemaHallId", referencedColumnName = "id", insertable = false, updatable = false)
-    val cinemaHall: CinemaHall? = null
+    override val cinemaHall: CinemaHall? = null
 ) : MovieBase
 
 @BeeRepository
@@ -38,7 +38,7 @@ class CinemaHall(
     val popCornStandId: Long,
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "popCornStandId", insertable = false, updatable = false)
-    val popcornStand: PopcornStand? = null
+    override val popcornStand: PopcornStand? = null
 ) : CinemaHallBase
 
 @BeeRepository
@@ -53,11 +53,11 @@ class Ticket(
     val movieId: Long,
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "movieId", referencedColumnName = "id", insertable = false, updatable = false)
-    val movie: Movie? = null,
+    override val movie: Movie? = null,
     val cinemaBuffId: Long,
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cinemaBuffId", referencedColumnName = "id", insertable = false, updatable = false)
-    val cinemaBuff: CinemaBuff? = null
+    override val cinemaBuff: CinemaBuff? = null
 ) : TicketBase
 
 @BeeRepository
@@ -82,11 +82,11 @@ class CinemaBuff(
     override val name: String,
     override val favoriteGenre: String,
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "cinemaBuff")
-    val tickets: Set<Ticket>? = null,
+    override val tickets: Set<Ticket>? = null,
     val favoritePopCornStandId: Long,
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "favoritePopCornStandId", insertable = false, updatable = false)
-    val favoritePopcornStand: PopcornStand? = null
+    override val favoritePopcornStand: PopcornStand? = null
 ) : CinemaBuffBase
 
 @BeeRepository

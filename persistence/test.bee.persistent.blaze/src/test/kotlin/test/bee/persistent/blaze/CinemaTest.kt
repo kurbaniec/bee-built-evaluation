@@ -1,5 +1,6 @@
 package test.bee.persistent.blaze
 
+import common.*
 import jakarta.persistence.EntityManager
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeAll
@@ -60,19 +61,16 @@ class CinemaTest(
 
     @Test
     fun `empty selection`() {
-        addCinema()
-        transaction.executeWithoutResult {
-            val cinemaBuff = cinemaBuffRepository.select()
-
-
-            println("empty selectioj")
+        addCinemas()
+        val cinemaBuffs = transaction.execute {
+            cinemaBuffRepository.select()
         }
+        assertEmptySelection(cinemaBuffs)
     }
 
     @Test
     fun `full selection`() {
-        addCinema()
-        addCinema()
+        addCinemas()
         val selection = CinemaBuffDSL.select {
             this.favoritePopcornStand { }
             this.tickets {
@@ -83,12 +81,61 @@ class CinemaTest(
                 }
             }
         }
-        transaction.executeWithoutResult {
-            val cinemaBuff = cinemaBuffRepository.select(selection)
-
-            println("full selection")
+        val cinemaBuffs = transaction.execute {
+            cinemaBuffRepository.select(selection)
         }
+        assertFullSelection(cinemaBuffs)
+    }
 
+    @Test
+    fun `partial selection - favoritePopcornStand`() {
+        addCinemas()
+        val selection = CinemaBuffDSL.select {
+            this.favoritePopcornStand { }
+        }
+        val cinemaBuffs = transaction.execute {
+            cinemaBuffRepository.select(selection)
+        }
+        assertPartialSelectionFavoritePopcornStand(cinemaBuffs)
+    }
+
+    @Test
+    fun `partial selection - tickets`() {
+        addCinemas()
+        val selection = CinemaBuffDSL.select {
+            this.tickets {
+                this.movie {
+                    this.cinemaHall {
+                        this.popcornStand {  }
+                    }
+                }
+            }
+        }
+        val cinemaBuffs = transaction.execute {
+            cinemaBuffRepository.select(selection)
+        }
+        assertPartialSelectionTickets(cinemaBuffs)
+    }
+
+    @Test
+    fun `partial selection - movie`() {
+        addCinemas()
+        val selection = CinemaBuffDSL.select {
+            this.tickets {
+                this.movie { }
+            }
+        }
+        val cinemaBuffs = transaction.execute {
+            cinemaBuffRepository.select(selection)
+        }
+        assertPartialSelectionMovie(cinemaBuffs)
+    }
+
+
+    private fun addCinemas() {
+        for (i in 1..5) {
+            addCinema()
+        }
     }
 
     private fun addCinema() {
@@ -127,8 +174,6 @@ class CinemaTest(
             ticketRepository.persist(ticketA)
             val ticketB = Ticket(price = 18.0, seatNumber = "C5", movieId = movieB.id, cinemaBuffId = cinemaBuff.id)
             ticketRepository.persist(ticketB)
-
-            println("Hey")
         }
     }
 }
