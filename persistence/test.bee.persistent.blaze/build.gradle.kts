@@ -156,8 +156,32 @@ tasks.bootRun {
     jvmArgs = listOf("-Dspring.output.ansi.enabled=ALWAYS")
 }
 
-val jmhBenchmark by tasks.registering(Test::class) {
+// val jmhBenchmark by tasks.registering(Test::class) {
+//     dependsOn(tasks.getByName("jmhClasses"))
+//     testClassesDirs = sourceSets["jmh"].output.classesDirs
+//     classpath = sourceSets["jmh"].runtimeClasspath
+// }
+
+// TODO: Remove java classes as not needed anymore
+// NOTE: DO NOT LOG IN TESTS AS IT SEEMS TO MAKE IT RUN ENDLESSLY
+// Maybe due too fork 0?
+
+tasks.register<Test>("jmhBenchmark") {
     dependsOn(tasks.getByName("jmhClasses"))
     testClassesDirs = sourceSets["jmh"].output.classesDirs
     classpath = sourceSets["jmh"].runtimeClasspath
+
+    filter {
+        includeTestsMatching("test.bee.persistent.blaze.CinemaBenchmarkBeePersistentBlaze")
+    }
+
+    // include { it.file.path.matches(".*/.*Benchmark.*\\.class".toRegex()) }
 }
+
+// val jmhBenchmark by tasks.registering(Test::class) {
+//     dependsOn(tasks.getByName("jmhClasses"))
+//     testClassesDirs = sourceSets["jmh"].output.classesDirs
+//     classpath = sourceSets["jmh"].runtimeClasspath
+//
+//     include("**/")
+// }
