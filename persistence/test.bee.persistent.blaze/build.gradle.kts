@@ -10,6 +10,7 @@ plugins {
     // ksp plugin must be placed before kapt
     // https://github.com/google/ksp/issues/1445#issuecomment-1763422067
     alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.kotlin.allopen)
     alias(libs.plugins.kotlin.noarg)
     java
@@ -50,6 +51,24 @@ configurations {
 
 repositories {
     mavenCentral()
+}
+
+sourceSets {
+    create("jmh") {
+        java {
+            srcDirs("src/jmh/kotlin", "src/jmh/java")
+            compileClasspath += main.get().output + test.get().output
+            runtimeClasspath += main.get().output + test.get().output
+            configurations["jmhImplementation"].extendsFrom(
+                configurations.implementation.get(),
+                configurations.testImplementation.get()
+            )
+            configurations["jmhRuntimeOnly"].extendsFrom(
+                configurations.runtimeOnly.get(),
+                configurations.testRuntimeOnly.get()
+            )
+        }
+    }
 }
 
 dependencies {
@@ -98,6 +117,10 @@ dependencies {
     testRuntimeOnly(libs.junit.engine)
     implementation(libs.h2)
     testImplementation(libs.springmockk)
+    // testImplementation("org.openjdk.jmh:jmh-core:1.37")
+
+
+
 
     if (System.getProperty("os.arch") == "aarch64" && System.getProperty("os.name") == "Mac OS X") {
         runtimeOnly("io.netty:netty-resolver-dns-native-macos:4.1.76.Final:osx-aarch_64")
@@ -106,7 +129,10 @@ dependencies {
     implementation("net.bytebuddy:byte-buddy:1.14.9")
     implementation("net.bytebuddy:byte-buddy-agent:1.14.9")
 
-
+    "jmhImplementation"("org.openjdk.jmh:jmh-core:1.37")
+    "jmhAnnotationProcessor"("org.openjdk.jmh:jmh-generator-annprocess:1.37")
+    "kaptJmh"("org.openjdk.jmh:jmh-generator-annprocess:1.37")
+    // testAnnotationProcessor("org.openjdk.jmh:jmh-generator-annprocess:1.37")
 }
 
 tasks.withType<Test> {
@@ -128,4 +154,10 @@ tasks.getByName<Jar>("jar") {
 
 tasks.bootRun {
     jvmArgs = listOf("-Dspring.output.ansi.enabled=ALWAYS")
+}
+
+val jmhBenchmark by tasks.registering(Test::class) {
+    dependsOn(tasks.getByName("jmhClasses"))
+    testClassesDirs = sourceSets["jmh"].output.classesDirs
+    classpath = sourceSets["jmh"].runtimeClasspath
 }
