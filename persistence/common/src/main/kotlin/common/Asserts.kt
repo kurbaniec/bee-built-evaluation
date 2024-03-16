@@ -16,7 +16,7 @@ data class AssertSelection(
     val tickets: Boolean = true,
     val movie: Boolean = true,
     val cinemaHall: Boolean = false,
-    val popcornStand: Boolean = false
+    val popcornStands: Boolean = false
 )
 
 fun assertSelection(
@@ -47,9 +47,9 @@ fun assertSelection(
         if (!selection.cinemaHall) continue
         val cinemaHall = movie.cinemaHall
         assertNotNull(cinemaHall)
-        if (!selection.popcornStand) continue
-        val popcornStand = cinemaHall.popcornStand
-        assertNotNull(popcornStand)
+        if (!selection.popcornStands) continue
+        val popcornStands = cinemaHall.popcornStands
+        assertFalse(popcornStands.isNullOrEmpty())
     }
 }
 
@@ -60,7 +60,7 @@ fun assertEmptySelection(cinemaBuffBase: List<CinemaBuffBase>?) {
         tickets = false,
         movie = false,
         cinemaHall = false,
-        popcornStand = false
+        popcornStands = false
     )
     assertSelection(cinemaBuffBase, selection)
 }

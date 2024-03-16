@@ -65,10 +65,8 @@ data class CinemaHall(
     override val id: Long = 0,
     override val hallName: String,
     override val capacity: Int,
-    val popCornStandId: Long,
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "popCornStandId", insertable = false, updatable = false)
-    override val popcornStand: PopcornStand? = null
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cinemaHall")
+    override val popcornStands: Set<PopcornStand>? = null
 ) : CinemaHallBase, DataEntity<CinemaHall> {
     override fun clone(): CinemaHall = this.copy()
 
@@ -79,7 +77,6 @@ data class CinemaHall(
         if (id != other.id) return false
         if (hallName != other.hallName) return false
         if (capacity != other.capacity) return false
-        if (popCornStandId != other.popCornStandId) return false
 
         return true
     }
@@ -88,7 +85,6 @@ data class CinemaHall(
         var result = id.hashCode()
         result = 31 * result + hallName.hashCode()
         result = 31 * result + capacity
-        result = 31 * result + popCornStandId.hashCode()
         return result
     }
 }
@@ -111,7 +107,7 @@ data class Ticket(
     val cinemaBuffId: Long,
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cinemaBuffId", referencedColumnName = "id", insertable = false, updatable = false)
-    override val cinemaBuff: CinemaBuff? = null
+    val cinemaBuff: CinemaBuff? = null
 ) : TicketBase, DataEntity<Ticket> {
     override fun clone(): Ticket = copy()
 
@@ -149,9 +145,34 @@ data class PopcornStand(
     override val id: Long = 0,
     override val name: String,
     override val flavor: String,
-    override val price: Double
+    override val price: Double,
+    val cinemaHallId: Long,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cinemaHallId", referencedColumnName = "id", insertable = false, updatable = false)
+    val cinemaHall: CinemaHall? = null
 ) : PopcornStandBase, DataEntity<PopcornStand> {
     override fun clone(): PopcornStand = copy()
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is PopcornStand) return false
+
+        if (id != other.id) return false
+        if (name != other.name) return false
+        if (flavor != other.flavor) return false
+        if (price != other.price) return false
+        if (cinemaHallId != other.cinemaHallId) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id.hashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + flavor.hashCode()
+        result = 31 * result + price.hashCode()
+        result = 31 * result + cinemaHallId.hashCode()
+        return result
+    }
 }
 
 @Component

@@ -56,8 +56,8 @@ class CinemaTestBeePersistentJpa(
         ticketRepository.deleteAll()
         cinemaBuffRepository.deleteAll()
         movieRepository.deleteAll()
-        cinemaHallRepository.deleteAll()
         popcornStandRepository.deleteAll()
+        cinemaHallRepository.deleteAll()
     }
 
     @Test
@@ -77,7 +77,7 @@ class CinemaTestBeePersistentJpa(
             FieldNode(CinemaBuff::tickets.name, setOf(
                 FieldNode(Ticket::movie.name, setOf(
                     FieldNode(Movie::cinemaHall.name, setOf(
-                        FieldNode(CinemaHall::popcornStand.name)
+                        FieldNode(CinemaHall::popcornStands.name)
                     ))
                 ))
             ))
@@ -107,7 +107,7 @@ class CinemaTestBeePersistentJpa(
             FieldNode(CinemaBuff::tickets.name, setOf(
                 FieldNode(Ticket::movie.name, setOf(
                     FieldNode(Movie::cinemaHall.name, setOf(
-                        FieldNode(CinemaHall::popcornStand.name)
+                        FieldNode(CinemaHall::popcornStands.name)
                     ))
                 ))
             ))
@@ -141,14 +141,18 @@ class CinemaTestBeePersistentJpa(
 
     private fun addCinema() {
         transaction.executeWithoutResult {
-            var popcornStandA = PopcornStand(name = "Popcorn!", flavor = "Salty", price = 42.0)
-            popcornStandA = popcornStandRepository.persist(popcornStandA)
-            var popcornStandB = PopcornStand(name = "More Popcorn!", flavor = "Sweet", price = 42.0)
-            popcornStandB = popcornStandRepository.persist(popcornStandB)
-            var cinemaHallA = CinemaHall(hallName = "A", capacity = 100, popCornStandId = popcornStandA.id)
+            var cinemaHallA = CinemaHall(hallName = "A", capacity = 100)
             cinemaHallA = cinemaHallRepository.persist(cinemaHallA)
-            var cinemaHallB = CinemaHall(hallName = "B", capacity = 75, popCornStandId = popcornStandB.id)
+            var cinemaHallB = CinemaHall(hallName = "B", capacity = 75)
             cinemaHallB = cinemaHallRepository.persist(cinemaHallB)
+            var popcornStandA1 = PopcornStand(name = "Popcorn!", flavor = "Salty", price = 42.0, cinemaHallId = cinemaHallA.id)
+            popcornStandA1 = popcornStandRepository.persist(popcornStandA1)
+            var popcornStandA2 = PopcornStand(name = "Popcorn!!", flavor = "Salty", price = 42.0, cinemaHallId = cinemaHallA.id)
+            popcornStandA2 = popcornStandRepository.persist(popcornStandA2)
+            var popcornStandB1 = PopcornStand(name = "More Popcorn!", flavor = "Sweet", price = 42.0, cinemaHallId = cinemaHallB.id)
+            popcornStandB1 = popcornStandRepository.persist(popcornStandB1)
+            var popcornStandB2 = PopcornStand(name = "More Popcorn!!", flavor = "Sweet", price = 42.0, cinemaHallId = cinemaHallB.id)
+            popcornStandB2 = popcornStandRepository.persist(popcornStandB2)
             var movieA = Movie(
                 title = "Drive",
                 director = "Nicolas Winding Refn",
@@ -168,7 +172,7 @@ class CinemaTestBeePersistentJpa(
             var cinemaBuff = CinemaBuff(
                 name = "Max Cinema",
                 favoriteGenre = "Comedy",
-                favoritePopCornStandId = popcornStandA.id
+                favoritePopCornStandId = popcornStandA1.id
             )
             cinemaBuff = cinemaBuffRepository.persist(cinemaBuff)
             val ticketA = Ticket(price = 20.0, seatNumber = "D5", movieId = movieA.id, cinemaBuffId = cinemaBuff.id)

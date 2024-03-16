@@ -20,7 +20,7 @@ interface CinemaHallBase {
     val id: Long?
     val hallName: String
     val capacity: Int
-    val popcornStand: PopcornStandBase?
+    val popcornStands: Collection<PopcornStandBase>?
 }
 
 interface TicketBase {
@@ -28,7 +28,7 @@ interface TicketBase {
     val price: Double
     val seatNumber: String
     val movie: MovieBase?
-    val cinemaBuff: CinemaBuffBase?
+    // val cinemaBuff: CinemaBuffBase?
 }
 
 interface PopcornStandBase {
