@@ -21,30 +21,5 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 @TestPropertySource("classpath:application-pg.properties")
 class CinemaTestBeePersistentBlaze(
     @Autowired
-    val testSuite: PersistenceTestSuite
-) : BasePersistenceTest() {
-    override fun insertData(size: Int) {
-        testSuite.insertData(size)
-    }
-
-    override fun performEmptySelection(): List<CinemaBuffBase>? {
-        return testSuite.performEmptySelection()
-    }
-
-    override fun performPartialSelectionFavoritePopcornStand(): List<CinemaBuffBase>? {
-        return testSuite.performPartialSelectionFavoritePopcornStand()
-    }
-
-    override fun performPartialSelectionMovie(): List<CinemaBuffBase>? {
-        return testSuite.performPartialSelectionMovie()
-    }
-
-    override fun performSelectionTickets(): List<CinemaBuffBase>? {
-        return testSuite.performSelectionTickets()
-    }
-
-    override fun performFullSelection(): List<CinemaBuffBase>? {
-        return testSuite.performFullSelection()
-    }
-
-}
+    testSuite: PersistenceTestSuite
+) : BasePersistenceTest(testSuite)

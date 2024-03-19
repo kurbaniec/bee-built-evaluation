@@ -23,13 +23,15 @@ import kotlin.test.assertEquals
 
 @Testcontainers
 @TestMethodOrder(OrderAnnotation::class)
-abstract class BasePersistenceTest : PersistenceTestSuite {
+abstract class BasePersistenceTest(
+    protected val testSuite: PersistenceTestSuite
+) {
 
     @BeforeEach
     fun beforeEach() {
         println(performedSetup)
         if (performedSetup) return
-        insertData(dataSize)
+        testSuite.insertData(dataSize)
         performedSetup = true
     }
 
@@ -52,7 +54,7 @@ abstract class BasePersistenceTest : PersistenceTestSuite {
     @Test
     @Order(1)
     fun `empty selection`() {
-        val cinemaBuffs = performEmptySelection()
+        val cinemaBuffs = testSuite.performEmptySelection()
         assertEquals(dataSize, cinemaBuffs?.count())
         assertEmptySelection(cinemaBuffs)
     }
@@ -60,7 +62,7 @@ abstract class BasePersistenceTest : PersistenceTestSuite {
     @Test
     @Order(2)
     fun `partial selection - favoritePopcornStand`() {
-        val cinemaBuffs = performPartialSelectionFavoritePopcornStand()
+        val cinemaBuffs = testSuite.performPartialSelectionFavoritePopcornStand()
         assertEquals(dataSize, cinemaBuffs?.count())
         assertPartialSelectionFavoritePopcornStand(cinemaBuffs)
     }
@@ -68,7 +70,7 @@ abstract class BasePersistenceTest : PersistenceTestSuite {
     @Test
     @Order(3)
     fun `partial selection - movie`() {
-        val cinemaBuffs = performPartialSelectionMovie()
+        val cinemaBuffs = testSuite.performPartialSelectionMovie()
         assertEquals(dataSize, cinemaBuffs?.count())
         assertPartialSelectionMovie(cinemaBuffs)
     }
@@ -76,7 +78,7 @@ abstract class BasePersistenceTest : PersistenceTestSuite {
     @Test
     @Order(4)
     fun `partial selection - tickets`() {
-        val cinemaBuffs = performSelectionTickets()
+        val cinemaBuffs = testSuite.performSelectionTickets()
         assertEquals(dataSize, cinemaBuffs?.count())
         assertPartialSelectionTickets(cinemaBuffs)
     }
@@ -84,7 +86,7 @@ abstract class BasePersistenceTest : PersistenceTestSuite {
     @Test
     @Order(5)
     fun `full selection`() {
-        val cinemaBuffs = performFullSelection()
+        val cinemaBuffs = testSuite.performFullSelection()
         assertEquals(dataSize, cinemaBuffs?.count())
         assertFullSelection(cinemaBuffs)
     }

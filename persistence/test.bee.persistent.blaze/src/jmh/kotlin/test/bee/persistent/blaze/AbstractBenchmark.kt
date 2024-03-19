@@ -9,6 +9,7 @@ import org.openjdk.jmh.runner.RunnerException
 import org.openjdk.jmh.runner.options.Options
 import org.openjdk.jmh.runner.options.OptionsBuilder
 import org.openjdk.jmh.runner.options.TimeValue
+import java.io.File
 import kotlin.test.Test
 
 
@@ -31,6 +32,9 @@ abstract class AbstractBenchmark {
     @Test
     @Throws(RunnerException::class)
     fun executeJmhRunner() {
+        val file = File("./build/baum")
+        file.mkdirs()
+
         val opt: Options =
             OptionsBuilder() // set the class name regex for benchmarks to search for to the current class
                 .include("\\." + this.javaClass.simpleName + "\\.")
@@ -44,7 +48,7 @@ abstract class AbstractBenchmark {
                 .shouldDoGC(true)
                 .shouldFailOnError(true)
                 .resultFormat(ResultFormatType.JSON)
-                .result("./build/result.json") // set this to a valid filename if you want reports
+                .result("./build/baum/result.json") // set this to a valid filename if you want reports
                 .shouldFailOnError(true)
                 .jvmArgs("-server")
                 .build()
@@ -52,12 +56,12 @@ abstract class AbstractBenchmark {
         Runner(opt).run()
     }
 
-    @Benchmark
-    open fun someBenchmark(blackhole: Blackhole) {
-        val result = BenchmarkUtil.testFromKotlin()
-        blackhole.consume(result)
-        val value = CinemaBenchmarkBeePersistentBlaze.em.metamodel.managedTypes
-        blackhole.consume(value)
-    }
+    // @Benchmark
+    // open fun someBenchmark(blackhole: Blackhole) {
+    //     val result = BenchmarkUtil.testFromKotlin()
+    //     blackhole.consume(result)
+    //     val value = CinemaBenchmarkBeePersistentBlaze.em.metamodel.managedTypes
+    //     blackhole.consume(value)
+    // }
 
 }
