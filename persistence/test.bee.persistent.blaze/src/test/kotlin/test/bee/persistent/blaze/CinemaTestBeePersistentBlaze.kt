@@ -1,18 +1,29 @@
 package test.bee.persistent.blaze
 
+import com.github.dockerjava.api.model.ExposedPort
+import com.github.dockerjava.api.model.HostConfig
+import com.github.dockerjava.api.model.PortBinding
+import com.github.dockerjava.api.model.Ports
 import common.*
 import jakarta.persistence.EntityManager
+import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.context.DynamicPropertyRegistry
+import org.springframework.test.context.DynamicPropertySource
 import org.springframework.test.context.TestPropertySource
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.support.TransactionTemplate
+import org.testcontainers.containers.PostgreSQLContainer
+import org.testcontainers.junit.jupiter.Container
+import org.testcontainers.junit.jupiter.Testcontainers
 import test.bee.persistent.blaze.dsl.CinemaBuffDSL
 import kotlin.test.Test
 
@@ -25,8 +36,9 @@ import kotlin.test.Test
 
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(classes = [TestConfig::class])
-@TestPropertySource("classpath:application.properties")
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestPropertySource("classpath:application-pg.properties")
+//@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Testcontainers
 class CinemaTestBeePersistentBlaze(
     @Qualifier("testEM")
     val em: EntityManager,
@@ -45,8 +57,8 @@ class CinemaTestBeePersistentBlaze(
 ) {
     private val transaction = TransactionTemplate(transactionManager)
 
-    @BeforeAll
-    fun beforeAll() = clear()
+    @BeforeEach
+    fun beforeEach() = clear()
 
     @AfterEach
     fun afterEach() = clear()
@@ -57,6 +69,37 @@ class CinemaTestBeePersistentBlaze(
         movieRepository.cbf.delete(em, Movie::class.java).executeUpdate()
         popcornStandRepository.cbf.delete(em, PopcornStand::class.java).executeUpdate()
         cinemaHallRepository.cbf.delete(em, CinemaHall::class.java).executeUpdate()
+    }
+
+    companion object {
+        val containerPort = 52288
+        val localPort = 5432
+
+        @JvmStatic
+        @Container
+        val postgres = PostgreSQLContainer("postgres:16.2-alpine")
+            // .withExposedPorts(containerPort)
+            // .withCreateContainerCmdModifier { cmd ->
+            //     HostConfig()
+            //         .withPortBindings(PortBinding(Ports.Binding.bindPort(localPort), ExposedPort(containerPort)))
+            // }
+
+        @JvmStatic
+        @DynamicPropertySource
+        fun configureProperties(registry: DynamicPropertyRegistry) {
+            registry.add("spring.datasource-test.jdbcUrl", postgres::getJdbcUrl)
+            registry.add("spring.datasource-test.username", postgres::getUsername)
+            registry.add("spring.datasource-test.password", postgres::getPassword)
+            // registry.add("spring.jpa.properties.hibernate.dialect") { "org.hibernate.dialect.PostgreSQLDialect" }
+        }
+
+        // @BeforeAll
+        // @JvmStatic
+        // fun startContainer() = postgres.start()
+        //
+        // @AfterAll
+        // @JvmStatic
+        // fun stopContainer() = postgres.stop()
     }
 
     @Test

@@ -71,6 +71,10 @@ sourceSets {
     }
 }
 
+ext {
+    set("testcontainers.version", "1.19.7")
+}
+
 dependencies {
     implementation(project(":common"))
     beeGenerative("com.beeproduced:bee.persistent", "blaze")
@@ -119,7 +123,9 @@ dependencies {
     testImplementation(libs.springmockk)
     // testImplementation("org.openjdk.jmh:jmh-core:1.37")
 
-
+    implementation("org.postgresql:postgresql:42.7.3")
+    testImplementation("org.testcontainers:junit-jupiter")
+    testImplementation("org.testcontainers:postgresql")
 
 
     if (System.getProperty("os.arch") == "aarch64" && System.getProperty("os.name") == "Mac OS X") {
