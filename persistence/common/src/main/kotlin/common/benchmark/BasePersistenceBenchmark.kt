@@ -41,7 +41,7 @@ abstract class BasePersistenceBenchmark {
 
     enum class DataSize(val size: Int) {
         SMALL(500),
-        LARGE(500)
+        LARGE(5000)
     }
 
     abstract val dataSize: DataSize

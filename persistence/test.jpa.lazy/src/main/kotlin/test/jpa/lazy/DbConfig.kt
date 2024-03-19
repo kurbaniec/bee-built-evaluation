@@ -1,10 +1,5 @@
 package test.jpa.lazy
 
-import com.beeproduced.bee.persistent.jpa.meta.MetaModel
-import jakarta.annotation.PostConstruct
-import jakarta.persistence.EntityManager
-import org.hibernate.metamodel.model.domain.internal.MappingMetamodelImpl
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.jdbc.DataSourceBuilder

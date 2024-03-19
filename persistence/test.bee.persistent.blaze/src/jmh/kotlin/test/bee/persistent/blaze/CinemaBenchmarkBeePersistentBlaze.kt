@@ -1,5 +1,3 @@
-@file:Suppress("SpringJavaInjectionPointsAutowiringInspection")
-
 package test.bee.persistent.blaze
 
 import common.benchmark.BasePersistenceBenchmark
@@ -13,5 +11,5 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 @TestPropertySource("classpath:application-pg-bench.properties")
 class CinemaBenchmarkBeePersistentBlaze : BasePersistenceBenchmark() {
     override val path: String = "../reports/bee.persistent.blaze"
-    override val dataSize: DataSize = DataSize.SMALL
+    override val dataSize: DataSize = DataSize.LARGE
 }

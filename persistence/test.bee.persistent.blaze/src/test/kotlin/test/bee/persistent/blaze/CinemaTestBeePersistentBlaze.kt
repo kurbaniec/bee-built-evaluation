@@ -1,6 +1,5 @@
 package test.bee.persistent.blaze
 
-import common.CinemaBuffBase
 import common.PersistenceTestSuite
 import common.test.BasePersistenceTest
 import org.junit.jupiter.api.extension.ExtendWith

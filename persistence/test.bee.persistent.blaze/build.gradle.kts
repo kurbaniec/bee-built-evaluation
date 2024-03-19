@@ -67,6 +67,7 @@ sourceSets {
                 configurations.runtimeOnly.get(),
                 configurations.testRuntimeOnly.get()
             )
+            // resources.srcDirs += main.get().resources + test.get().resources
         }
     }
 }
@@ -121,7 +122,6 @@ dependencies {
     testRuntimeOnly(libs.junit.engine)
     implementation(libs.h2)
     testImplementation(libs.springmockk)
-    // testImplementation("org.openjdk.jmh:jmh-core:1.37")
 
     implementation("org.postgresql:postgresql:42.7.3")
     testImplementation("org.testcontainers:junit-jupiter")
@@ -138,7 +138,6 @@ dependencies {
     "jmhImplementation"("org.openjdk.jmh:jmh-core:1.37")
     "jmhAnnotationProcessor"("org.openjdk.jmh:jmh-generator-annprocess:1.37")
     "kaptJmh"("org.openjdk.jmh:jmh-generator-annprocess:1.37")
-    // testAnnotationProcessor("org.openjdk.jmh:jmh-generator-annprocess:1.37")
 }
 
 tasks.withType<Test> {
@@ -162,16 +161,6 @@ tasks.bootRun {
     jvmArgs = listOf("-Dspring.output.ansi.enabled=ALWAYS")
 }
 
-// val jmhBenchmark by tasks.registering(Test::class) {
-//     dependsOn(tasks.getByName("jmhClasses"))
-//     testClassesDirs = sourceSets["jmh"].output.classesDirs
-//     classpath = sourceSets["jmh"].runtimeClasspath
-// }
-
-// TODO: Remove java classes as not needed anymore
-// NOTE: DO NOT LOG IN TESTS AS IT SEEMS TO MAKE IT RUN ENDLESSLY
-// Maybe due too fork 0?
-
 tasks.register<Test>("jmhBenchmark") {
     dependsOn(tasks.getByName("jmhClasses"))
     testClassesDirs = sourceSets["jmh"].output.classesDirs
@@ -180,14 +169,4 @@ tasks.register<Test>("jmhBenchmark") {
     filter {
         includeTestsMatching("test.bee.persistent.blaze.CinemaBenchmarkBeePersistentBlaze")
     }
-
-    // include { it.file.path.matches(".*/.*Benchmark.*\\.class".toRegex()) }
 }
-
-// val jmhBenchmark by tasks.registering(Test::class) {
-//     dependsOn(tasks.getByName("jmhClasses"))
-//     testClassesDirs = sourceSets["jmh"].output.classesDirs
-//     classpath = sourceSets["jmh"].runtimeClasspath
-//
-//     include("**/")
-// }
