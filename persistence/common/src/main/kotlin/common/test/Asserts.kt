@@ -1,5 +1,6 @@
-package common
+package common.test
 
+import common.CinemaBuffBase
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 
@@ -9,7 +10,6 @@ import kotlin.test.assertNotNull
  * @author Kacper Urbaniec
  * @version 2024-03-16
  */
-
 
 data class AssertSelection(
     val favoritePopCornStand: Boolean = true,

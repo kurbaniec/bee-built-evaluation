@@ -1,6 +1,8 @@
 
 package test.bee.persistent.blaze
 
+import org.openjdk.jmh.annotations.Benchmark
+import org.openjdk.jmh.infra.Blackhole
 import org.openjdk.jmh.results.format.ResultFormatType
 import org.openjdk.jmh.runner.Runner
 import org.openjdk.jmh.runner.RunnerException
@@ -48,6 +50,14 @@ abstract class AbstractBenchmark {
                 .build()
 
         Runner(opt).run()
+    }
+
+    @Benchmark
+    open fun someBenchmark(blackhole: Blackhole) {
+        val result = BenchmarkUtil.testFromKotlin()
+        blackhole.consume(result)
+        val value = CinemaBenchmarkBeePersistentBlaze.em.metamodel.managedTypes
+        blackhole.consume(value)
     }
 
 }

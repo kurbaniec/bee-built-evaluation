@@ -2,7 +2,7 @@ package test.bee.persistent.jpa
 
 import com.beeproduced.bee.persistent.selection.SimpleSelection
 import com.beeproduced.bee.persistent.selection.SimpleSelection.FieldNode
-import common.*
+import common.test.*
 import jakarta.persistence.EntityManager
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeAll

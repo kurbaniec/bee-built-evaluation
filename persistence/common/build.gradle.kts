@@ -29,8 +29,20 @@ repositories {
     mavenCentral()
 }
 
+ext {
+    set("testcontainers.version", "1.19.7")
+}
+
 dependencies {
     implementation(kotlin("test"))
+
+    implementation(libs.spring.boot.starter.test)
+    implementation(libs.junit.api)
+    implementation("org.openjdk.jmh:jmh-core:1.37")
+    implementation("org.postgresql:postgresql:42.7.3")
+    implementation("org.testcontainers:junit-jupiter:1.19.7")
+    api("org.testcontainers:junit-jupiter:1.19.7")
+    implementation("org.testcontainers:postgresql:1.19.7")
 }
 
 tasks.withType<Test> {
