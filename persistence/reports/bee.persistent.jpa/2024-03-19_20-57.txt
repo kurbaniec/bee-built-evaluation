@@ -1,0 +1,6 @@
+Benchmark                                                                Mode  Cnt   Score   Error  Units
+CinemaBenchmarkBeePersistentJpa.b1EmptySelection                        thrpt    5   0,877 ± 0,191  ops/s
+CinemaBenchmarkBeePersistentJpa.b2PartialSelectionFavoritePopcornStand  thrpt    5   1,755 ± 0,169  ops/s
+CinemaBenchmarkBeePersistentJpa.b3PartialSelectionMovie                 thrpt    5   0,598 ± 0,026  ops/s
+CinemaBenchmarkBeePersistentJpa.b4PartialSelectionTickets               thrpt    5  25,817 ± 5,832  ops/s
+CinemaBenchmarkBeePersistentJpa.b5FullSelection                         thrpt    5  22,882 ± 6,805  ops/s
