@@ -1,5 +1,6 @@
 package test.bee.persistent.jpa
 
+import com.beeproduced.bee.persistent.selection.SimpleSelection
 import common.CinemaBuffBase
 import common.PersistenceTestSuite
 import jakarta.persistence.EntityManager
@@ -83,22 +84,71 @@ class TestSuite(
     }
 
     override fun performEmptySelection(): List<CinemaBuffBase>? {
-        TODO("Not yet implemented")
+        return transaction.execute {
+            cinemaBuffRepository.select()
+        }
     }
 
     override fun performPartialSelectionFavoritePopcornStand(): List<CinemaBuffBase>? {
-        TODO("Not yet implemented")
+        val selection = SimpleSelection(setOf(
+            SimpleSelection.FieldNode(CinemaBuff::favoritePopcornStand.name),
+        ))
+        return transaction.execute {
+            cinemaBuffRepository.select(selection)
+        }
     }
 
     override fun performPartialSelectionMovie(): List<CinemaBuffBase>? {
-        TODO("Not yet implemented")
+        val selection = SimpleSelection(setOf(
+            SimpleSelection.FieldNode(CinemaBuff::tickets.name, setOf(
+                SimpleSelection.FieldNode(Ticket::movie.name)
+            ))
+        ))
+        return transaction.execute {
+            cinemaBuffRepository.select(selection)
+        }
     }
 
     override fun performSelectionTickets(): List<CinemaBuffBase>? {
-        TODO("Not yet implemented")
+        val selection = SimpleSelection(setOf(
+            SimpleSelection.FieldNode(
+                CinemaBuff::tickets.name, setOf(
+                    SimpleSelection.FieldNode(
+                        Ticket::movie.name, setOf(
+                            SimpleSelection.FieldNode(
+                                Movie::cinemaHall.name, setOf(
+                                    SimpleSelection.FieldNode(CinemaHall::popcornStands.name)
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        ))
+        return transaction.execute {
+            cinemaBuffRepository.select(selection)
+        }
     }
 
     override fun performFullSelection(): List<CinemaBuffBase>? {
-        TODO("Not yet implemented")
+        val selection = SimpleSelection(setOf(
+            SimpleSelection.FieldNode(CinemaBuff::favoritePopcornStand.name),
+            SimpleSelection.FieldNode(
+                CinemaBuff::tickets.name, setOf(
+                    SimpleSelection.FieldNode(
+                        Ticket::movie.name, setOf(
+                            SimpleSelection.FieldNode(
+                                Movie::cinemaHall.name, setOf(
+                                    SimpleSelection.FieldNode(CinemaHall::popcornStands.name)
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        ))
+        return transaction.execute {
+            cinemaBuffRepository.select(selection)
+        }
     }
 }

@@ -29,7 +29,6 @@ abstract class BasePersistenceTest(
 
     @BeforeEach
     fun beforeEach() {
-        println(performedSetup)
         if (performedSetup) return
         testSuite.insertData(dataSize)
         performedSetup = true

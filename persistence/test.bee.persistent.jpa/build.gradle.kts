@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.spring.boot)
     alias(libs.plugins.spring.dependencymanagement)
     alias(libs.plugins.kotlin.jpa)
+    alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.kotlin.allopen)
     alias(libs.plugins.kotlin.noarg)
     java
@@ -46,6 +47,28 @@ configurations {
 
 repositories {
     mavenCentral()
+}
+
+sourceSets {
+    create("jmh") {
+        java {
+            srcDirs("src/jmh/kotlin", "src/jmh/java")
+            compileClasspath += main.get().output + test.get().output
+            runtimeClasspath += main.get().output + test.get().output
+            configurations["jmhImplementation"].extendsFrom(
+                configurations.implementation.get(),
+                configurations.testImplementation.get()
+            )
+            configurations["jmhRuntimeOnly"].extendsFrom(
+                configurations.runtimeOnly.get(),
+                configurations.testRuntimeOnly.get()
+            )
+        }
+    }
+}
+
+ext {
+    set("testcontainers.version", "1.19.7")
 }
 
 dependencies {
@@ -94,6 +117,11 @@ dependencies {
     implementation(libs.h2)
     testImplementation(libs.springmockk)
 
+    implementation("org.postgresql:postgresql:42.7.3")
+    testImplementation("org.testcontainers:junit-jupiter")
+    testImplementation("org.testcontainers:postgresql")
+
+
     if (System.getProperty("os.arch") == "aarch64" && System.getProperty("os.name") == "Mac OS X") {
         runtimeOnly("io.netty:netty-resolver-dns-native-macos:4.1.76.Final:osx-aarch_64")
     }
@@ -101,6 +129,9 @@ dependencies {
     implementation("net.bytebuddy:byte-buddy:1.14.9")
     implementation("net.bytebuddy:byte-buddy-agent:1.14.9")
 
+    "jmhImplementation"("org.openjdk.jmh:jmh-core:1.37")
+    "jmhAnnotationProcessor"("org.openjdk.jmh:jmh-generator-annprocess:1.37")
+    "kaptJmh"("org.openjdk.jmh:jmh-generator-annprocess:1.37")
 
 }
 
@@ -116,4 +147,15 @@ tasks.getByName<Jar>("jar") {
 
 tasks.bootRun {
     jvmArgs = listOf("-Dspring.output.ansi.enabled=ALWAYS")
+}
+
+
+tasks.register<Test>("jmhBenchmark") {
+    dependsOn(tasks.getByName("jmhClasses"))
+    testClassesDirs = sourceSets["jmh"].output.classesDirs
+    classpath = sourceSets["jmh"].runtimeClasspath
+
+    filter {
+        includeTestsMatching("test.bee.persistent.jpa.CinemaBenchmarkBeePersistentJpa")
+    }
 }
