@@ -2,17 +2,133 @@
 
 ## Data
 
-data size per test in ideal scenerio
+Data set:
+
+* Cinemabuff
+  * Popcornstand (1x)
+  * Tickets (2x)
+    * Movie (1x)
+      * CinemaHall (1x)
+        * Popcornstand (2x)
+
+> FavoritePopCornStand (1x) is part of Popcornstand (2x)
+
+Data size per test in ideal scenario:
+
+> use following to access testcontainer
+>
+> ```
+> psql -U test
+> \c test
+> ```
 
 ### empty selection
 
+* 1 Entity
+  * 1 CinemaBuff
+* 1 Table (CinemaBuff)
+* 1 Row
+* On `dataSize=125`:  125 Rows
+* On `dataSize=250`:  250 Rows
+* On `dataSize=500`:  500 Rows
+
+```sql
+select id from cinemabuff;
+```
+
+```sql
+select count(*) from 
+(select id from cinemabuff group by id);
+```
+
+### partial selection - favoritePopcornStand
+
+* 2 Entities
+  * 1 CinemaBuff
+  * 1 PopcornStand
+* 2 Tables (CinemaBuff, PopcornStand)
+* 1 Row
+* On `dataSize=125`:  125 Rows
+* On `dataSize=250`:  250 Rows
+* On `dataSize=500`:  500 Rows
+
+```sql
+select cb.id as cbid, fp.id as fpid from cinemabuff cb left join popcornstand fp on fp.id=cb.favoritePopCornStandId;
+```
+
+```sql
+select count(*) from
+(select cb.id as cbid, fp.id as fpid from cinemabuff cb left join popcornstand fp on fp.id=cb.favoritePopCornStandId);
+```
+
+### partial selection - movie
+
+* 5 Entities
+  * 1 CinemaBuff
+  * 2 Tickets
+  * 2 Movies
+* 5 Tables (CinemaBuff, Tickets, Movies)
+* 2 Rows
+* On `dataSize=125`:  250 Rows
+* On `dataSize=250`:  500 Rows
+* On `dataSize=500`:  1000 Rows
+
+```sql
+select cb.id as cbid, t.id as tid, m.id as mid from cinemabuff cb left join ticket t on cb.id=t.cinemaBuffId left join movie m on m.id=t.movieId;
+```
+
+```sql
+select count(*) from
+(select cb.id as cbid, t.id as tid, m.id as mid from cinemabuff cb left join ticket t on cb.id=t.cinemaBuffId left join movie m on m.id=t.movieId);
+```
+
+### partial selection - ticket
+
+* 11 Entities
+  * 1 CinemaBuff
+  * 2 Tickets
+  * 2 Movies
+  * 2 CinemaHall
+  * 4 PopcornStand
+* 5 Tables (CinemaBuff, Tickets, Movies, CinemaHall, PopcornStand)
+* 4 Row
+* On `dataSize=125`:  500 Rows
+* On `dataSize=250`:  1000 Rows
+* On `dataSize=500`:  2000 Rows
+
+```sql
+select cb.id as cbId, t.id as tid, m.id as mid, ch.id as chid, p.id as pid from cinemabuff cb left join ticket t on cb.id=t.cinemaBuffId left join movie m on m.id=t.movieId left join cinemahall ch on ch.id=m.cinemaHallId left join popcornstand p on ch.id=p.cinemaHallId;
+```
+
+```sql
+select count(*) from
+(select cb.id as cbId, t.id as tid, m.id as mid, ch.id as chid, p.id as pid from cinemabuff cb left join ticket t on cb.id=t.cinemaBuffId left join movie m on m.id=t.movieId left join cinemahall ch on ch.id=m.cinemaHallId left join popcornstand p on ch.id=p.cinemaHallId);
+```
+
+### full selection
+
+* 11 Entities
+  * 1 CinemaBuff
+  * 2 Tickets
+  * 2 Movies
+  * 2 CinemaHall
+  * 4 PopcornStand
+* 6 Tables (CinemaBuff, Tickets, Movies, CinemaHall, 2x PopcornStand)
+* 4 Rows
+* On `dataSize=125`:  500 Rows
+* On `dataSize=250`:  1000 Rows
+* On `dataSize=500`:  2000 Rows
+
+```sql
+select cb.id as cbid, fp.id as fpid, t.id as tid, m.id as mid, ch.id as chid, p.id as pid from cinemabuff cb left join popcornstand fp on fp.id=cb.favoritePopcornStandId left join ticket t on cb.id=t.cinemaBuffId left join movie m on m.id=t.movieId left join cinemahall ch on ch.id=m.cinemaHallId left join popcornstand p on ch.id=p.cinemaHallId;
+```
+
+```sql
+select count(*) from
+(select cb.id as cbid, fp.id as fpid, t.id as tid, m.id as mid, ch.id as chid, p.id as pid from cinemabuff cb left join popcornstand fp on fp.id=cb.favoritePopcornStandId left join ticket t on cb.id=t.cinemaBuffId left join movie m on m.id=t.movieId left join cinemahall ch on ch.id=m.cinemaHallId left join popcornstand p on ch.id=p.cinemaHallId);
+```
 
 
-empty selection
-
-1 entity
-
-1 table
 
 ---
 
