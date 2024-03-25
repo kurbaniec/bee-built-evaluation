@@ -2,6 +2,7 @@ package common.benchmark
 
 import common.PersistenceTestSuite
 import common.test.*
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.MethodOrderer
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestMethodOrder
@@ -14,10 +15,10 @@ import org.openjdk.jmh.runner.options.Options
 import org.openjdk.jmh.runner.options.OptionsBuilder
 import org.openjdk.jmh.runner.options.TimeValue
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.SpringApplication
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
+import org.springframework.test.context.support.TestPropertySourceUtils
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
@@ -45,9 +46,9 @@ abstract class BasePersistenceBenchmark {
 
     @Autowired
     @Suppress("SpringJavaInjectionPointsAutowiringInspection")
-    fun setTestSuite(testSuite: PersistenceTestSuite) {
-        Companion.testSuite = testSuite
-        setupBenchmark()
+    fun setAutowiredTestSuite(testSuite: PersistenceTestSuite) {
+        // Companion.testSuite = testSuite
+        // setupBenchmark()
     }
 
     // open lateinit var context: AnnotationConfigApplicationContext
@@ -57,15 +58,67 @@ abstract class BasePersistenceBenchmark {
     //     val context = SpringApplication()
     // }
 
-    private fun setupBenchmark() {
-        println("---setupBenchmark---")
-        println("> data size: $dataSize")
-        testSuite.insertData(dataSize)
-        println("> data inserted")
+    lateinit var context: AnnotationConfigApplicationContext
+    lateinit var testSuite: PersistenceTestSuite
+    abstract val config: List<Class<*>>
+    abstract val propertySource: List<String>
+
+    @Setup(Level.Trial)
+    fun setupBenchmark() {
+        val (context, testSuite) = startSpringAndGetTestSuite()
+        // println("---setupBenchmark---")
+        // println("> data size: $dataSize")
+        // testSuite.insertData(dataSize)
+        // println("> data inserted")
+        this.context = context
+        this.testSuite = testSuite
+    }
+
+    @TearDown(Level.Trial)
+    fun tearDown() {
+        context.close()
     }
 
     companion object {
-        lateinit var testSuite: PersistenceTestSuite
+        lateinit var CONFIG: List<Class<*>>
+        lateinit var PROPERTY_SOURCE: List<String>
+        var DATA_SIZE: Int = 0
+
+        private fun startSpringAndGetTestSuite(): Pair<AnnotationConfigApplicationContext, PersistenceTestSuite> {
+            // Create a new application context
+            val context = AnnotationConfigApplicationContext()
+
+            // Register your configuration class
+            for (c in CONFIG)
+                context.register(c)
+
+            // Add test properties
+            for (p in PROPERTY_SOURCE)
+                TestPropertySourceUtils.addPropertiesFilesToEnvironment(context, p)
+
+            TestPropertySourceUtils.addInlinedPropertiesToEnvironment(context, "spring.datasource-test.jdbcUrl=${postgres.jdbcUrl}")
+            TestPropertySourceUtils.addInlinedPropertiesToEnvironment(context, "spring.datasource-test.username=${postgres.username}")
+            TestPropertySourceUtils.addInlinedPropertiesToEnvironment(context, "spring.datasource-test.password=${postgres.password}")
+
+            // Refresh the context to apply changes
+            context.refresh()
+
+            val testSuite = context.getBean(PersistenceTestSuite::class.java)
+            return Pair(context, testSuite)
+        }
+
+        @BeforeAll
+        @JvmStatic
+        fun setupBenchmarkData() {
+            val (context, testSuite) = startSpringAndGetTestSuite()
+            println("---setupBenchmark---")
+            println("> data size: $DATA_SIZE")
+            testSuite.insertData(DATA_SIZE)
+            println("> data inserted")
+            context.close()
+        }
+
+        // lateinit var testSuite: PersistenceTestSuite
 
         // https://github.com/openjdk/jmh/blob/master/jmh-core/src/main/java/org/openjdk/jmh/runner/Defaults.java
         private const val MEASUREMENT_ITERATIONS = 5

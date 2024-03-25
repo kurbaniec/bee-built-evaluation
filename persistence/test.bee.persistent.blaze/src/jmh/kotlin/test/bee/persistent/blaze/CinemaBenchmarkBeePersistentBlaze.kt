@@ -8,12 +8,24 @@ import org.springframework.test.context.TestPropertySource
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.context.support.TestPropertySourceUtils
 
-@ExtendWith(SpringExtension::class)
-@SpringBootTest(classes = [TestConfig::class])
-@TestPropertySource("classpath:application-pg-bench.properties")
-class CinemaBenchmarkBeePersistentBlaze : BasePersistenceBenchmark() {
+// @ExtendWith(SpringExtension::class)
+// @SpringBootTest(classes = [TestConfig::class])
+// @TestPropertySource("classpath:application-pg-bench.properties")
+open class CinemaBenchmarkBeePersistentBlaze : BasePersistenceBenchmark() {
     override val path: String = "../reports/bee.persistent.blaze"
-    override val dataSize: Int = System.getProperty("dataSize").toInt()
+    final override val dataSize: Int = System.getProperty("dataSize").toInt()
+    final override val config: List<Class<*>> = listOf(TestConfig::class.java)
+    final override val propertySource: List<String> = listOf(
+        "classpath:application.properties",
+        "classpath:application-pg-bench.properties"
+    )
+
+    init {
+        CONFIG = config
+        PROPERTY_SOURCE = propertySource
+        DATA_SIZE = dataSize
+    }
+
     //
     // override var context: AnnotationConfigApplicationContext = buildContext()
     //
