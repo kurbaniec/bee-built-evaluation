@@ -12,6 +12,74 @@ empty selection
 
  ## bee.persistent.jpa
 
+### empty selection
+
+* 3 Queries
+* 1 CinemaBuff
+* 1 CinemaBuff - PopcornStand
+* 1 CinemaBuff - PopcornStand - CinemaHall
+* On `dataSize=2`:  5 Queries
+
+```sql
+2024-03-25T18:27:42.687+01:00 DEBUG 26100 --- [    Test worker] org.hibernate.SQL                        : select c1_0.id,c1_0.favoriteGenre,c1_0.favoritePopCornStandId,c1_0.name from CinemaBuff c1_0
+2024-03-25T18:27:42.711+01:00 DEBUG 26100 --- [    Test worker] org.hibernate.SQL                        : select p1_0.id,p1_0.cinemaHallId,p1_0.flavor,p1_0.name,p1_0.price from PopcornStand p1_0 where p1_0.id=?
+2024-03-25T18:27:42.711+01:00 TRACE 26100 --- [    Test worker] org.hibernate.orm.jdbc.bind              : binding parameter [1] as [BIGINT] - [1]
+2024-03-25T18:27:42.714+01:00 DEBUG 26100 --- [    Test worker] org.hibernate.SQL                        : select c1_0.id,c1_0.capacity,c1_0.hallName from CinemaHall c1_0 where c1_0.id=?
+2024-03-25T18:27:42.715+01:00 TRACE 26100 --- [    Test worker] org.hibernate.orm.jdbc.bind              : binding parameter [1] as [BIGINT] - [1]
+```
+
+### partial selection - favoritePopcornStand
+
+* 2 Queries
+* 1 CinemaBuff JOIN PopcornStand
+* 1 CinemaBuff - PopcornStand - CinemaHall
+* On `dataSize=2`:  3 Queries (2*1 + 1)
+  * 2*1 (dataSize * subquery) + 1 (mainquery)
+
+```sql
+2024-03-25T18:27:42.787+01:00 DEBUG 26100 --- [    Test worker] org.hibernate.SQL                        : select c1_0.id,c1_0.favoriteGenre,c1_0.favoritePopCornStandId,f1_0.id,f1_0.cinemaHallId,f1_0.flavor,f1_0.name,f1_0.price,c1_0.name from CinemaBuff c1_0 left join PopcornStand f1_0 on f1_0.id=c1_0.favoritePopCornStandId
+2024-03-25T18:27:42.791+01:00 DEBUG 26100 --- [    Test worker] org.hibernate.SQL                        : select c1_0.id,c1_0.capacity,c1_0.hallName from CinemaHall c1_0 where c1_0.id=?
+2024-03-25T18:27:42.792+01:00 TRACE 26100 --- [    Test worker] org.hibernate.orm.jdbc.bind              : binding parameter [1] as [BIGINT] - [1]
+```
+
+### partial selection - movie
+
+* 4 Queries
+* 1 CinemaBuff JOIN Ticket JOIN Movie
+* 1 CinemaBuff - PopcornStand
+* 2 CinemaBuff - Ticket - Movie - CinemaHall
+* On `dataSize=2`:  7 Queries
+
+```sql
+2024-03-25T18:27:42.817+01:00 DEBUG 26100 --- [    Test worker] org.hibernate.SQL                        : select c1_0.id,c1_0.favoriteGenre,c1_0.favoritePopCornStandId,c1_0.name,t1_0.cinemaBuffId,t1_0.id,m1_0.id,m1_0.cinemaHallId,m1_0.director,m1_0.durationInMinutes,m1_0.genre,m1_0.title,t1_0.movieId,t1_0.price,t1_0.seatNumber from CinemaBuff c1_0 left join Ticket t1_0 on c1_0.id=t1_0.cinemaBuffId left join Movie m1_0 on m1_0.id=t1_0.movieId
+2024-03-25T18:27:42.823+01:00 DEBUG 26100 --- [    Test worker] org.hibernate.SQL                        : select p1_0.id,p1_0.cinemaHallId,p1_0.flavor,p1_0.name,p1_0.price from PopcornStand p1_0 where p1_0.id=?
+2024-03-25T18:27:42.824+01:00 TRACE 26100 --- [    Test worker] org.hibernate.orm.jdbc.bind              : binding parameter [1] as [BIGINT] - [1]
+2024-03-25T18:27:42.826+01:00 DEBUG 26100 --- [    Test worker] org.hibernate.SQL                        : select c1_0.id,c1_0.capacity,c1_0.hallName from CinemaHall c1_0 where c1_0.id=?
+2024-03-25T18:27:42.827+01:00 TRACE 26100 --- [    Test worker] org.hibernate.orm.jdbc.bind              : binding parameter [1] as [BIGINT] - [1]
+2024-03-25T18:27:42.831+01:00 DEBUG 26100 --- [    Test worker] org.hibernate.SQL                        : select c1_0.id,c1_0.capacity,c1_0.hallName from CinemaHall c1_0 where c1_0.id=?
+2024-03-25T18:27:42.832+01:00 TRACE 26100 --- [    Test worker] org.hibernate.orm.jdbc.bind              : binding parameter [1] as [BIGINT] - [2]
+```
+
+### partial selection - ticket
+
+* 1 Query
+* 1 CinemaBuff JOIN Ticket JOIN Movie JOIN CinemaHall JOIN PopcornStand
+* On `dataSize=2`:  1 Query
+
+```sql
+2024-03-25T18:27:42.848+01:00 DEBUG 26100 --- [    Test worker] org.hibernate.SQL                        : select c1_0.id,c1_0.favoriteGenre,c1_0.favoritePopCornStandId,c1_0.name,t1_0.cinemaBuffId,t1_0.id,m1_0.id,c2_0.id,c2_0.capacity,c2_0.hallName,p1_0.cinemaHallId,p1_0.id,p1_0.flavor,p1_0.name,p1_0.price,m1_0.cinemaHallId,m1_0.director,m1_0.durationInMinutes,m1_0.genre,m1_0.title,t1_0.movieId,t1_0.price,t1_0.seatNumber from CinemaBuff c1_0 left join Ticket t1_0 on c1_0.id=t1_0.cinemaBuffId left join Movie m1_0 on m1_0.id=t1_0.movieId left join CinemaHall c2_0 on c2_0.id=m1_0.cinemaHallId left join PopcornStand p1_0 on c2_0.id=p1_0.cinemaHallId
+```
+
+### full selection
+
+* 1 Query
+* 1 CinemaBuff JOIN PopcornStand f1 JOIN Ticket JOIN Movie JOIN CinemaHall JOIN PopcornStand p1
+* On `dataSize=2`:  1 Query
+
+```sql
+2024-03-25T18:27:42.868+01:00 DEBUG 26100 --- [    Test worker] org.hibernate.SQL                        : select c1_0.id,c1_0.favoriteGenre,c1_0.favoritePopCornStandId,f1_0.id,f1_0.cinemaHallId,f1_0.flavor,f1_0.name,f1_0.price,c1_0.name,t1_0.cinemaBuffId,t1_0.id,m1_0.id,c3_0.id,c3_0.capacity,c3_0.hallName,p1_0.cinemaHallId,p1_0.id,p1_0.flavor,p1_0.name,p1_0.price,m1_0.cinemaHallId,m1_0.director,m1_0.durationInMinutes,m1_0.genre,m1_0.title,t1_0.movieId,t1_0.price,t1_0.seatNumber from CinemaBuff c1_0 left join PopcornStand f1_0 on f1_0.id=c1_0.favoritePopCornStandId left join Ticket t1_0 on c1_0.id=t1_0.cinemaBuffId left join Movie m1_0 on m1_0.id=t1_0.movieId left join CinemaHall c3_0 on c3_0.id=m1_0.cinemaHallId left join PopcornStand p1_0 on c3_0.id=p1_0.cinemaHallId
+```
+
 
 
 ## jpa.eager
@@ -22,7 +90,7 @@ empty selection
 * 1 CinemaBuff - PopcornStand JOIN CinemaHall
 * 1 CinemaBuff - PopcornStand - CinemaHall - PopcornStand
 * 1 CinemaBuff - Ticket JOIN Movie JOIN CinemaHall JOIN PopcornStand
-* On `dataSize=2`:  7 Queries ((4-1)*2)
+* On `dataSize=2`:  7 Queries (2*3+1)
 
 ```sql
 2024-03-25T17:49:23.883+01:00 DEBUG 19964 --- [    Test worker] org.hibernate.SQL                        : select c1_0.id,c1_0.favoriteGenre,c1_0.favoritePopCornStandId,c1_0.name from CinemaBuff c1_0
