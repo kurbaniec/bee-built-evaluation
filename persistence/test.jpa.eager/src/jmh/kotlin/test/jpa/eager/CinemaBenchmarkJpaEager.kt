@@ -17,5 +17,5 @@ import org.springframework.test.context.junit.jupiter.SpringExtension
 @TestPropertySource("classpath:application-pg-bench.properties")
 class CinemaBenchmarkJpaEager : BasePersistenceBenchmark() {
     override val path: String = "../reports/jpa.eager"
-    override val dataSize: DataSize = DataSize.SMALL
+    override val dataSize: Int = System.getProperty("dataSize").toInt()
 }

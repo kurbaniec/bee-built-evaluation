@@ -14,6 +14,8 @@ import org.openjdk.jmh.runner.options.Options
 import org.openjdk.jmh.runner.options.OptionsBuilder
 import org.openjdk.jmh.runner.options.TimeValue
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.SpringApplication
+import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 import org.testcontainers.containers.PostgreSQLContainer
@@ -39,12 +41,7 @@ import java.time.format.DateTimeFormatter
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 abstract class BasePersistenceBenchmark {
 
-    enum class DataSize(val size: Int) {
-        SMALL(500),
-        LARGE(5000)
-    }
-
-    abstract val dataSize: DataSize
+    abstract val dataSize: Int
 
     @Autowired
     @Suppress("SpringJavaInjectionPointsAutowiringInspection")
@@ -53,9 +50,17 @@ abstract class BasePersistenceBenchmark {
         setupBenchmark()
     }
 
+    // open lateinit var context: AnnotationConfigApplicationContext
+    //
+    // @Setup
+    // fun setup() {
+    //     val context = SpringApplication()
+    // }
+
     private fun setupBenchmark() {
         println("---setupBenchmark---")
-        testSuite.insertData(dataSize.size)
+        println("> data size: $dataSize")
+        testSuite.insertData(dataSize)
         println("> data inserted")
     }
 
@@ -92,7 +97,7 @@ abstract class BasePersistenceBenchmark {
         val currentDateTime = LocalDateTime.now()
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm")
         val formattedDateTime = currentDateTime.format(formatter)
-        return "$path/$formattedDateTime.txt"
+        return "$path/${formattedDateTime}_$dataSize.txt"
     }
 
     @Test
@@ -107,7 +112,6 @@ abstract class BasePersistenceBenchmark {
                         BasePersistenceBenchmark::class.java.simpleName +
                         ")\\."
                 )
-                //.include("CinemaBenchmarkBeePersistentBlaze")
                 .warmupIterations(WARMUP_ITERATIONS)
                 .measurementIterations(MEASUREMENT_ITERATIONS) // do not use forking or the benchmark methods will not see references stored within its class
                 .warmupTime(WARMUP_TME)

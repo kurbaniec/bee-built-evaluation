@@ -1,6 +1,9 @@
 @echo off
 SETLOCAL EnableDelayedExpansion
 
+REM Assuming %1 is your dataSize argument
+set dataSize=%1
+
 REM Define the list of directories
 set "dirs=test.bee.persistent.blaze test.bee.persistent.jpa test.jpa.eager test.jpa.lazy"
 
@@ -15,7 +18,7 @@ for %%d in (%dirs%) do (
     echo --------------------------------------
     pushd %%d
     IF EXIST gradlew.bat (
-        gradlew.bat jmhBenchmark -i --rerun
+        gradlew.bat jmhBenchmark -PdataSize=%dataSize% -i --rerun
     ) ELSE (
         echo gradlew.bat not found in %%d
     )

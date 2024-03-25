@@ -154,6 +154,10 @@ tasks.register<Test>("jmhBenchmark") {
     dependsOn(tasks.getByName("jmhClasses"))
     testClassesDirs = sourceSets["jmh"].output.classesDirs
     classpath = sourceSets["jmh"].runtimeClasspath
+    val dataSize = if (project.hasProperty("dataSize"))
+        project.property("dataSize") as String
+    else "500"
+    systemProperty("dataSize", dataSize)
 
     filter {
         includeTestsMatching("test.bee.persistent.jpa.CinemaBenchmarkBeePersistentJpa")
