@@ -14,8 +14,6 @@ import org.openjdk.jmh.runner.options.Options
 import org.openjdk.jmh.runner.options.OptionsBuilder
 import org.openjdk.jmh.runner.options.TimeValue
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.SpringApplication
-import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 import org.testcontainers.containers.PostgreSQLContainer
@@ -49,13 +47,6 @@ abstract class BasePersistenceBenchmark {
         Companion.testSuite = testSuite
         setupBenchmark()
     }
-
-    // open lateinit var context: AnnotationConfigApplicationContext
-    //
-    // @Setup
-    // fun setup() {
-    //     val context = SpringApplication()
-    // }
 
     private fun setupBenchmark() {
         println("---setupBenchmark---")
@@ -112,6 +103,7 @@ abstract class BasePersistenceBenchmark {
                         BasePersistenceBenchmark::class.java.simpleName +
                         ")\\."
                 )
+                .mode(Mode.Throughput)
                 .warmupIterations(WARMUP_ITERATIONS)
                 .measurementIterations(MEASUREMENT_ITERATIONS) // do not use forking or the benchmark methods will not see references stored within its class
                 .warmupTime(WARMUP_TME)
