@@ -17,22 +17,22 @@ function EQ_GET_DATA(){
 },{
 "name": "com.beeproduced.service.media.film.feature", "key": "V", "value":148, 
 "pmetrics":{"4":1,"12":1,"13":1,"14":1,"3":1,"1":1,"0":1,"6":1,"8":1,"2":1,"15":1,"16":1},
-"pmetricvalues":{"4":1,"12":3,"13":0,"14":4,"3":1,"1":1,"0":1,"17":0.0,"6":4,"18":0.0,"8":148,"19":1.0,"2":1,"15":0,"16":21},
+"pmetricvalues":{"38":3,"4":1,"12":3,"13":0,"14":4,"3":1,"1":1,"0":1,"17":0.0,"6":4,"18":0.0,"8":148,"19":1.0,"39":3,"2":1,"15":0,"40":0,"16":21},
 "children":[
 {
 "name": "FilmEvents","key": "W","value":19, 
 "metrics":{"20":2,"21":1,"22":1,"23":1,"24":1,"25":1,"26":1,"0":3,"27":1,"28":1,"29":1,"30":1,"31":1,"32":3,"33":1,"34":1,"35":1,"36":1,"16":1,"37":1,"4":1,"8":1,"2":2,"3":3,"1":1},
-"metricvalues":{"20":8,"21":0,"22":2,"23":0.0,"24":14,"25":0,"26":1,"0":3,"27":6,"28":24,"29":0.0,"30":0.0,"31":0,"32":0.714,"33":5,"34":5,"35":0,"36":3,"16":5,"37":0,"4":1,"8":19,"2":2,"3":3,"1":1}
+"metricvalues":{"20":8,"21":0,"38":1,"22":2,"23":0.0,"24":14,"25":0,"26":1,"0":3,"27":6,"28":24,"29":0.0,"30":0.0,"31":0,"32":0.714,"39":1,"33":5,"34":5,"40":0,"35":0,"36":3,"16":5,"37":0,"4":1,"8":19,"2":2,"3":3,"1":1}
 },
 {
 "name": "FilmService","key": "0","value":99, 
 "metrics":{"20":3,"21":1,"22":1,"23":1,"24":2,"25":1,"26":1,"0":3,"27":1,"28":1,"29":5,"30":1,"31":1,"32":2,"33":1,"34":1,"35":1,"36":2,"16":1,"37":1,"4":2,"8":2,"2":3,"3":2,"1":1},
-"metricvalues":{"20":14,"21":0,"22":3,"23":0.0,"24":93,"25":0,"26":1,"0":3,"27":7,"28":19,"29":1.0,"30":0.0,"31":0,"32":0.661,"33":4,"34":11,"35":0,"36":10,"16":9,"37":0,"4":2,"8":99,"2":3,"3":2,"1":1}
+"metricvalues":{"20":14,"21":0,"38":2,"22":3,"23":0.0,"24":93,"25":0,"26":1,"0":3,"27":7,"28":19,"29":1.0,"30":0.0,"31":0,"32":0.661,"39":1,"33":4,"34":11,"40":1,"35":0,"36":10,"16":9,"37":0,"4":2,"8":99,"2":3,"3":2,"1":1}
 },
 {
 "name": "FilmRepository","key": "Y","value":30, 
 "metrics":{"20":1,"21":1,"22":1,"23":1,"24":1,"25":1,"26":2,"0":2,"27":1,"28":1,"29":5,"30":1,"31":1,"32":1,"33":1,"34":1,"35":1,"36":1,"16":1,"37":1,"4":1,"8":1,"2":1,"3":1,"1":2},
-"metricvalues":{"20":4,"21":0,"22":1,"23":0.0,"24":7,"25":0,"26":2,"0":2,"27":2,"28":4,"29":1.0,"30":0.0,"31":1,"32":0.4,"33":0,"34":2,"35":0,"36":4,"16":5,"37":0,"4":1,"8":30,"2":1,"3":1,"1":2}
+"metricvalues":{"20":4,"21":0,"38":1,"22":1,"23":0.0,"24":7,"25":0,"26":2,"0":2,"27":2,"28":4,"29":1.0,"30":0.0,"31":1,"32":0.4,"39":0,"33":0,"34":2,"40":1,"35":0,"36":4,"16":5,"37":0,"4":1,"8":30,"2":1,"3":1,"1":2}
 }
 ]
 }]
@@ -79,6 +79,9 @@ EQ_METRIC_MAP["Simple Response For a Class"] =34;
 EQ_METRIC_MAP["Number of Static Methods"] =35;
 EQ_METRIC_MAP["CBO Lib"] =36;
 EQ_METRIC_MAP["Number of Overridden Methods"] =37;
+EQ_METRIC_MAP["Degree"] =38;
+EQ_METRIC_MAP["OutDegree"] =39;
+EQ_METRIC_MAP["InDegree"] =40;
 var EQ_SELECTED_CLASS_METRIC 		= "Coupling";
 var EQ_SELECTED_PACKAGE_METRIC 	= "Coupling";
 var EQ_SELECTED_PROJECT_METRIC 	= "Class Lines of Code";
@@ -86,8 +89,8 @@ var EQ_CLASS_METRIC_INDEX 	= EQ_METRIC_MAP[EQ_SELECTED_CLASS_METRIC];
 var EQ_PACKAGE_METRIC_INDEX	= EQ_METRIC_MAP[EQ_SELECTED_PACKAGE_METRIC];
 var EQ_PROJECT_METRIC_INDEX 	= EQ_METRIC_MAP[EQ_SELECTED_PROJECT_METRIC];
 var EQ_COLOR_OF_LEVELS = ["#1F77B4","#007F24","#62BF18","#FFC800","#FF5B13","#E50000"];
-var EQ_CLASS_METRICS = ["C3","Complexity","Coupling","Lack of Cohesion","Size","Class Lines of Code","Weighted Method Count","Coupling Between Object Classes","Access to Foreign Data","Number of Fields","Specialization Index","Class-Methods Lines of Code","Number of Children","Depth of Inheritance Tree","Number of Methods","Response For a Class","Lack of Tight Class Cohesion","Lack of Cohesion of Methods","Number of Static Fields","Lack of Cohesion Among Methods(1-CAM)","CBO App","Simple Response For a Class","Number of Static Methods","CBO Lib","Number of Overridden Methods"];
-var EQ_PACKAGE_METRICS = ["C3","Complexity","Coupling","Lack of Cohesion","Size","Number of Entities","Class Lines of Code","Efferent Coupling","Number of Interfaces","Number of Classes","Afferent Coupling","Weighted Method Count","Normalized Distance","Abstractness","Instability"];
+var EQ_CLASS_METRICS = ["C3","Complexity","Coupling","Lack of Cohesion","Size","Class Lines of Code","Weighted Method Count","Coupling Between Object Classes","Access to Foreign Data","Number of Fields","Specialization Index","Class-Methods Lines of Code","Number of Children","Depth of Inheritance Tree","Number of Methods","Response For a Class","Lack of Tight Class Cohesion","Lack of Cohesion of Methods","Number of Static Fields","Lack of Cohesion Among Methods(1-CAM)","CBO App","Simple Response For a Class","Number of Static Methods","CBO Lib","Number of Overridden Methods","Degree","OutDegree","InDegree"];
+var EQ_PACKAGE_METRICS = ["C3","Complexity","Coupling","Lack of Cohesion","Size","Number of Entities","Class Lines of Code","Efferent Coupling","Number of Interfaces","Number of Classes","Afferent Coupling","Weighted Method Count","Normalized Distance","Abstractness","Instability","Degree","OutDegree","InDegree"];
 var EQ_PROJECT_METRICS = ["Number of Highly Problematic Classes","Number of Entities","Number of Problematic Classes","Class Lines of Code","Number of External Packages","Number of Packages","Number of External Entities"];
 function EQ_GET_COLOR(d) {
 if(d.metrics)
