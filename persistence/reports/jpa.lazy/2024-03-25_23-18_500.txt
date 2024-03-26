@@ -1,0 +1,6 @@
+Benchmark                                                       Mode  Cnt  Score   Error  Units
+CinemaBenchmarkJpaLazy.b1EmptySelection                        thrpt    5  0,664 ± 0,022  ops/s
+CinemaBenchmarkJpaLazy.b2PartialSelectionFavoritePopcornStand  thrpt    5  0,659 ± 0,013  ops/s
+CinemaBenchmarkJpaLazy.b3PartialSelectionMovie                 thrpt    5  0,217 ± 0,005  ops/s
+CinemaBenchmarkJpaLazy.b4PartialSelectionTickets               thrpt    5  0,159 ± 0,005  ops/s
+CinemaBenchmarkJpaLazy.b5FullSelection                         thrpt    5  0,160 ± 0,005  ops/s
