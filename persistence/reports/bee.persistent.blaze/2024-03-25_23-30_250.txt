@@ -1,6 +1,6 @@
 Benchmark                                                                  Mode  Cnt   Score   Error  Units
-CinemaBenchmarkBeePersistentBlaze.b1EmptySelection                        thrpt    5  99,495 ± 4,201  ops/s
-CinemaBenchmarkBeePersistentBlaze.b2PartialSelectionFavoritePopcornStand  thrpt    5  94,345 ± 1,472  ops/s
-CinemaBenchmarkBeePersistentBlaze.b3PartialSelectionMovie                 thrpt    5  52,334 ± 0,653  ops/s
-CinemaBenchmarkBeePersistentBlaze.b4PartialSelectionTickets               thrpt    5  29,855 ± 0,690  ops/s
-CinemaBenchmarkBeePersistentBlaze.b5FullSelection                         thrpt    5  27,686 ± 0,437  ops/s
+CinemaBenchmarkBeePersistentBlaze.b1EmptySelection                        thrpt    5  99.495 ± 4.201  ops/s
+CinemaBenchmarkBeePersistentBlaze.b2PartialSelectionFavoritePopcornStand  thrpt    5  94.345 ± 1.472  ops/s
+CinemaBenchmarkBeePersistentBlaze.b3PartialSelectionMovie                 thrpt    5  52.334 ± 0.653  ops/s
+CinemaBenchmarkBeePersistentBlaze.b4PartialSelectionTickets               thrpt    5  29.855 ± 0.690  ops/s
+CinemaBenchmarkBeePersistentBlaze.b5FullSelection                         thrpt    5  27.686 ± 0.437  ops/s
