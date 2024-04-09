@@ -180,6 +180,12 @@ select count(*) from
 * 1 CinemaBuff JOIN PopcornStand f1 JOIN Ticket JOIN Movie JOIN CInemaHall JOIN PopcornStand p1
 * On `dataSize=2`:  1 Queries
 
+```sql
+2024-03-25T19:20:13.711+01:00 DEBUG 27348 --- [    Test worker] org.hibernate.SQL                        : select c1_0.id,c1_0.favoriteGenre,c1_0.favoritePopCornStandId,null,null,null,null,f1_0.cinemaHallId,f1_0.flavor,f1_0.name,f1_0.price,c1_0.name,t1_0.id,null,null,null,null,null,null,null,null,null,null,t1_0.cinemaBuffId,t1_0.movieId,m1_0.cinemaHallId,c2_0.capacity,c2_0.hallName,p1_0.id,null,null,null,null,p1_0.cinemaHallId,p1_0.flavor,p1_0.name,p1_0.price,m1_0.director,m1_0.durationInMinutes,m1_0.genre,m1_0.title,t1_0.price,t1_0.seatNumber from CinemaBuff c1_0 left join PopcornStand f1_0 on f1_0.id=c1_0.favoritePopCornStandId left join Ticket t1_0 on c1_0.id=t1_0.cinemaBuffId left join Movie m1_0 on m1_0.id=t1_0.movieId left join CinemaHall c2_0 on c2_0.id=m1_0.cinemaHallId left join PopcornStand p1_0 on c2_0.id=p1_0.cinemaHallId
+```
+
+
+
  ## bee.persistent.jpa
 
 ### empty selection
